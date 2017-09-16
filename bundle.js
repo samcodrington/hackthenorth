@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10330,7 +10330,25 @@ return jQuery;
 "use strict";
 
 
-var _ImageProcessor = __webpack_require__(2);
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var config = {
+    azure: {
+        key: '54c8c00683f845348a1ff443a3fa536a'
+    }
+};
+
+exports.default = config;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _ImageProcessor = __webpack_require__(3);
 
 var _ImageProcessor2 = _interopRequireDefault(_ImageProcessor);
 
@@ -10358,7 +10376,7 @@ var fD = new _FeatureDetector2.default();
 var dM = new _DatabaseManager2.default();
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10374,7 +10392,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _config = __webpack_require__(3);
+var _config = __webpack_require__(1);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -10536,24 +10554,6 @@ var ImageProcessor = function () {
 exports.default = ImageProcessor;
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var config = {
-    azure: {
-        key: '54c8c00683f845348a1ff443a3fa536a'
-    }
-};
-
-exports.default = config;
-
-/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10605,15 +10605,26 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
+var _config = __webpack_require__(1);
+
+var _config2 = _interopRequireDefault(_config);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var api_key = '190078ca8ad2919e5e468521e5d5114a';
+var uri_root = 'https://api.themoviedb.org/3/';
+var max_image_set_size = 5;
 
 var DatabaseManager = function () {
     function DatabaseManager() {
         _classCallCheck(this, DatabaseManager);
 
         this.events();
+        this.cacheTmdbConfig();
+        this.base_url = null;
+        this.img_size = null;
     }
 
     _createClass(DatabaseManager, [{
@@ -10623,12 +10634,31 @@ var DatabaseManager = function () {
 
             (0, _jquery2.default)('#nameButton').on('click', function () {
                 var query = {};
-                query.api_key = '190078ca8ad2919e5e468521e5d5114a';
+                query.api_key = api_key;
                 query.query = (0, _jquery2.default)('#nameInput').val();
 
-                var url = 'https://api.themoviedb.org/3/search/person';
+                var url = uri_root + 'search/person';
 
-                _jquery2.default.get(url, query, _this.onNameQueryResponse);
+                _jquery2.default.get(url, query, _this.onNameQueryResponse.bind(_this));
+            });
+        }
+    }, {
+        key: 'cacheTmdbConfig',
+        value: function cacheTmdbConfig() {
+            var _this2 = this;
+
+            var query = {};
+            query.api_key = api_key;
+            var url = uri_root + 'configuration';
+
+            _jquery2.default.get(url, query, function (response) {
+                if (response) {
+                    _this2.base_url = response.images.base_url;
+                    var profile_sizes = response.images.profile_sizes;
+                    _this2.img_size = 'original';
+                } else {
+                    //TODO: error handling
+                }
             });
         }
     }, {
@@ -10638,9 +10668,81 @@ var DatabaseManager = function () {
             if (response && response.results.length > 0) {
                 var tmdbId = response.results[0].id;
                 (0, _jquery2.default)('#tmdbId').text(tmdbId);
+
+                var query = {};
+                query.api_key = api_key;
+
+                var url = uri_root + 'person/' + tmdbId + '/images';
+                // Get Image from TMDB
+                _jquery2.default.get(url, query, this.onImageQueryResponse.bind(this));
             } else {
                 (0, _jquery2.default)('#tmdbId').text('No ID was found');
             }
+        }
+    }, {
+        key: 'onImageQueryResponse',
+        value: function onImageQueryResponse(response) {
+            if (response && response.profiles.length > 0) {
+                (0, _jquery2.default)('#tmdbImgContainer').empty();
+                var i = 0;
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = response.profiles[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var profile = _step.value;
+
+                        if (i < max_image_set_size) {
+                            // Only need datasets of 5 or less
+
+                            var url = this.base_url + this.img_size + '/' + profile.file_path;
+
+                            (0, _jquery2.default)('#tmdbImgContainer').append((0, _jquery2.default)('<img>').attr('src', url));
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+            } else {
+                (0, _jquery2.default)('#tmdbImgContainer').empty();
+            }
+        }
+    }, {
+        key: 'createAzurePersonGroup',
+        value: function createAzurePersonGroup(groupId, groupName) {
+            var query = {};
+            query.api_key = _config2.default.azure.key;
+            query.name = groupName;
+            var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/" + groupId + "/persons";
+        }
+    }, {
+        key: 'createAzurePerson',
+        value: function createAzurePerson(name) {
+            var query = {};
+            query.api_key = _config2.default.azure.key;
+            query.name = name;
+            var person_group_id = null; //TODO:
+            var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/" + person_group_id + "/persons";
+
+            _jquery2.default.get(url, query, this.onAzurePersonResponse);
+        }
+    }, {
+        key: 'onAzurePersonResponse',
+        value: function onAzurePersonResponse(response) {
+            var azureID = response.personID;
+            (0, _jquery2.default)('#AzureID').text(azureID);
         }
     }]);
 
