@@ -10353,7 +10353,7 @@ var iP = new _ImageProcessor2.default();
     iP.processImage();
 });
 var fD = new _FeatureDetector2.default();
-var dZ = new _DropZone2.default(fD);
+// var dZ = new DropZone(fD, iP);
 
 /***/ }),
 /* 2 */
@@ -10456,24 +10456,11 @@ var ImageProcessor = function () {
         }
     }, {
         key: 'verifyJonSnow',
-        value: function verifyJonSnow(url) {
-            // **********************************************
-            // *** Update or verify the following values. ***
-            // **********************************************
-
-            // Replace the subscriptionKey string value with your valid subscription key.
+        value: function verifyJonSnow(url, imageData) {
             var subscriptionKey = _config2.default.azure.key;
-
-            // Replace or verify the region.
-            //
-            // You must use the same region in your REST API call as you used to obtain your subscription keys.
-            // For example, if you obtained your subscription keys from the westus region, replace
-            // "westcentralus" in the URI below with "westus".
-            //
-            // NOTE: Free trial subscription keys are generated in the westcentralus region, so if you are using
-            // a free trial subscription key, you should not need to change this region.
             var uriBase = "https://westus.api.cognitive.microsoft.com/face/v1.0/detect";
             var contentType = "application/json";
+            var requestBody = '{"url": ' + '"' + url + '"}';
 
             // Request parameters.
             var params = {
@@ -10486,6 +10473,8 @@ var ImageProcessor = function () {
                 document.querySelector("#sourceImage").src = url;
             } else {
                 // Collect the file
+                requestBody = imageData;
+                console.log(requestBody);
                 //TODO: Finish this
                 contentType = "application/octet-stream";
             }
@@ -10503,7 +10492,7 @@ var ImageProcessor = function () {
                 type: "POST",
 
                 // Request body.
-                data: '{"url": ' + '"' + url + '"}'
+                data: requestBody
             }).done(function (data) {
                 // Show formatted JSON on webpage.
                 this.getActorFromFaceID(data[0].faceId);
@@ -10559,6 +10548,8 @@ var ImageProcessor = function () {
     }, {
         key: 'updatePercentage',
         value: function updatePercentage(_updatePercentage) {
+            _updatePercentage *= 100; // Convert to value out of 100 instead of out of 1
+            (0, _jquery2.default)('.result').removeClass('hidden');
             (0, _jquery2.default)('#percentage').text(_updatePercentage);
         }
     }]);
@@ -10644,13 +10635,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 // Drag and drop code primarily from:
 // https://css-tricks.com/drag-and-drop-file-uploading/
-var fD;
+var fD, iP;
 
 var DropZone = function () {
-    function DropZone(featureDetector) {
+    function DropZone(featureDetector, imageProcessor) {
         _classCallCheck(this, DropZone);
 
         fD = featureDetector;
+        iP = imageProcessor;
         this.$form = (0, _jquery2.default)('.drop-zone');
         this.$input = (0, _jquery2.default)('#file');
 
@@ -10695,53 +10687,64 @@ var DropZone = function () {
     }, {
         key: 'enableSubmitEvent',
         value: function enableSubmitEvent() {
-            var _this3 = this;
-
             this.$form.on('submit', function (event) {
-                if (_this3.$form.hasClass('is-uploading')) return false;
+                if (this.$form.hasClass('is-uploading')) return false;
 
-                _this3.$form.addClass('is-uploading').removeClass('is-error');
+                this.$form.addClass('is-uploading').removeClass('is-error');
 
                 if (fD.advancedUpload) {
                     // Ajax for modern browsers
                     event.preventDefault();
+                    event.stopPropagation();
 
-                    console.log('this.$form', _this3.$form.get(0));
-                    var ajaxData = new FormData(_this3.$form.get(0));
+                    console.log('this.$form', this.$form[0]);
+                    var ajaxData = new FormData(document.getElementById('drop-zone'));
 
-                    if (_this3.droppedFiles) {
-                        console.log('this.droppedFiles', _this3.droppedFiles);
-                        _jquery2.default.each(_this3.droppedFiles, function (i, file) {
-                            console.log(i + 'attr(name)', this.$input.attr('name'));
-                            ajaxData.append(this.$input.attr('name'), file);
-                        }.bind(_this3));
+                    if (this.droppedFiles && this.droppedFiles.length > 0) {
+                        // ajaxData = this.droppedFiles[0]
+                        var file = this.droppedFiles[0];
+
+                        var reader = new FileReader();
+                        reader.onload = function () {
+                            var arrayBuffer = this.result,
+                                array = new Uint8Array(arrayBuffer);
+                            // binaryString = String.fromCharCode.apply(null, array);
+
+                            // console.log('bS: ', binaryString);
+                            iP.verifyJonSnow(false, array);
+                        };
+                        reader.readAsArrayBuffer(file);
+
+                        // console.log('this.droppedFiles', this.droppedFiles);
+                        // $.each(this.droppedFiles, function(i, file) {
+                        //     console.log('file: ', file);
+                        //     ajaxData.append(this.$input.attr('name'), file);
+                        // }.bind(this));
                     }
 
-                    console.log('ajaxData', ajaxData);
-
-                    _jquery2.default.ajax({
-                        url: _this3.$form.attr('action'),
-                        type: _this3.$form.attr('method'),
-                        data: ajaxData,
-                        dataType: 'json',
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        complete: function complete() {
-                            _this3.$form.removeClass('is-uploading');
-                        },
-                        success: function success(data) {
-                            _this3.$form.addClass(data.success == true ? 'is-success' : 'is-error');
-                            if (!data.success) console.error(data.error); //TODO: replace with a visible span/div
-                        },
-                        error: function error() {
-                            //TODO: log, alert, etc.
-                        }
-                    });
+                    // $.ajax({
+                    //     url: this.$form.attr('action'),
+                    //     type: this.$form.attr('method'),
+                    //     data: ajaxData,
+                    //     dataType: 'json',
+                    //     cache: false,
+                    //     contentType: false,
+                    //     processData: false,
+                    //     complete: () => {
+                    //         this.$form.removeClass('is-uploading');
+                    //     },
+                    //     success: (data) => {
+                    //         this.$form.addClass(data.success == true ? 'is-success' : 'is-error');
+                    //         if (!data.success) console.error(data.error); //TODO: replace with a visible span/div
+                    //     },
+                    //     error: () => {
+                    //         //TODO: log, alert, etc.
+                    //     }
+                    // });
                 } else {
-                    // TODO: ajax for legacy browsers
-                }
-            });
+                        // TODO: ajax for legacy browsers
+                    }
+            }.bind(this));
         }
     }]);
 
