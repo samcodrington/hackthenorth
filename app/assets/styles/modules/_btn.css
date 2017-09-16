@@ -1,0 +1,16 @@
+.btn {
+    display: inline-block;
+    height: 4rem;
+    padding: 0 1rem;
+    background: $lightBlue;
+    font-family: 'Raleway', sans-serif;
+    font-size: 2rem;
+    font-weight: bold;
+    color: $darkGrey;
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $lighterBlue;
+    }
+}
