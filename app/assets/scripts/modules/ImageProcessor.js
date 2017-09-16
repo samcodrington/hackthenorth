@@ -77,24 +77,11 @@ class ImageProcessor {
         });
     };
 
-    verifyJonSnow(url){
-        // **********************************************
-        // *** Update or verify the following values. ***
-        // **********************************************
-    
-        // Replace the subscriptionKey string value with your valid subscription key.
+    verifyJonSnow(url, imageData) {
         var subscriptionKey = (config.azure.key);
-    
-        // Replace or verify the region.
-        //
-        // You must use the same region in your REST API call as you used to obtain your subscription keys.
-        // For example, if you obtained your subscription keys from the westus region, replace
-        // "westcentralus" in the URI below with "westus".
-        //
-        // NOTE: Free trial subscription keys are generated in the westcentralus region, so if you are using
-        // a free trial subscription key, you should not need to change this region.
         var uriBase = "https://westus.api.cognitive.microsoft.com/face/v1.0/detect";
         var contentType = "application/json";
+        var requestBody = '{"url": ' + '"' + url + '"}';
     
         // Request parameters.
         var params = {
@@ -108,6 +95,8 @@ class ImageProcessor {
         }
         else {
             // Collect the file
+            requestBody = imageData;
+            console.log(requestBody);
             //TODO: Finish this
             contentType = "application/octet-stream";
         }
@@ -126,7 +115,7 @@ class ImageProcessor {
             type: "POST",
     
             // Request body.
-            data: '{"url": ' + '"' + url + '"}',
+            data: requestBody
         })
     
         .done(function(data) {
@@ -191,6 +180,8 @@ class ImageProcessor {
     }
 
     updatePercentage(updatePercentage) {
+        updatePercentage *= 100;    // Convert to value out of 100 instead of out of 1
+        $('.result').removeClass('hidden');
         $('#percentage').text(updatePercentage);
     }
 

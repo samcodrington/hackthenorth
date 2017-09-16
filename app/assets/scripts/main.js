@@ -8,4 +8,4 @@ $('#urlbutton').on('click', function(){
     iP.processImage();
 });
 var fD = new FeatureDetector();
-var dZ = new DropZone(fD);
+// var dZ = new DropZone(fD, iP);
