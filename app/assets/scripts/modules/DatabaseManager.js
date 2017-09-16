@@ -1,4 +1,6 @@
 import $ from 'jquery';
+import config from '../../../../public/data/config.js';
+
 
 let api_key = '190078ca8ad2919e5e468521e5d5114a';
 let uri_root = 'https://api.themoviedb.org/3/'
@@ -75,6 +77,27 @@ class DatabaseManager {
         } else {
             $('#tmdbImgContainer').empty();
         }
+    }
+
+    createAzurePersonGroup(groupId, groupName){
+        var query = {};
+        query.api_key = config.azure.key;
+        query.name = groupName;
+        var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ groupId + "/persons"
+    }
+
+    createAzurePerson(name) {
+        var query = {};
+        query.api_key = config.azure.key;
+        query.name = name;
+        var person_group_id = null;//TODO:
+        var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ person_group_id + "/persons"
+
+        $.get(url,query,this.onAzurePersonResponse)
+    }
+    onAzurePersonResponse(response){
+        var azureID = response.personID;
+        $('#AzureID').text(azureID);
     }
 
 }
