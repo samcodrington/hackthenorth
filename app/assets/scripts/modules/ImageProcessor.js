@@ -159,7 +159,6 @@ class ImageProcessor {
     
         .done(function(data) {
             // Show formatted JSON on webpage.
-            console.log('data', data);
             
             var confidence = 0;
             if (data[0].candidates.length > 0) {
