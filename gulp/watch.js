@@ -6,7 +6,7 @@ gulp.task('watch', () => {
 
     browserSync.init({
         notify: false,
-        server: '.'
+        proxy: "localhost:8080"
     });
 
     watch('./app/assets/scripts/**/*.js', () => {
@@ -17,7 +17,7 @@ gulp.task('watch', () => {
         gulp.start('cssInject');
     });
     
-    watch('./index.html', function() {
+    watch('./**/index.html', function() {
         browserSync.reload();
     });
 
