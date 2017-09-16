@@ -29,6 +29,7 @@
   "dependencies": {
     "autoprefixer": "^7.1.4",
     "gulp-postcss": "^7.0.0",
+    "jquery": "^3.2.1",
     "postcss-hexrgba": "^1.0.0",
     "postcss-import": "^10.0.0",
     "postcss-mixins": "^6.1.0",
