@@ -18,6 +18,10 @@
         padding-bottom: 100%;
         height: 0;
     }
+
+    &.has-advanced-upload .drop-zone__dragndrop {
+        display: inline;
+    }
 }
 
 .drop-zone .drop-zone__dragndrop,

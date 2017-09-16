@@ -40,6 +40,9 @@ a {
         padding-bottom: 100%;
         height: 0;
     }
+.drop-zone.has-advanced-upload .drop-zone__dragndrop {
+        display: inline;
+    }
 .drop-zone .drop-zone__dragndrop,
 .drop-zone .drop-zone__uploading,
 .drop-zone .drop-zone__success,
