@@ -1,5 +1,4 @@
 import $ from 'jquery';
-let jQuery = $; // TODO: remove after we're no longer using example code
 import config from '../../../../public/data/config.js';
 
 class ImageProcessor {
@@ -22,7 +21,7 @@ class ImageProcessor {
         var requestBody = '{"url": ' + '"' + url + '"}';
     
         this.resetPercentage();
-        
+
         // Request parameters.
         var params = {
             "returnFaceId": "true",
@@ -59,11 +58,11 @@ class ImageProcessor {
         .fail(function(jqXHR, textStatus, errorThrown) {
             // Display error message.
             var errorString = (errorThrown === "") ? "Error. " : errorThrown + " (" + jqXHR.status + "): ";
-            errorString += (jqXHR.responseText === "") ? "" : (jQuery.parseJSON(jqXHR.responseText).message) ? 
-                jQuery.parseJSON(jqXHR.responseText).message : jQuery.parseJSON(jqXHR.responseText).error.message;
+            errorString += (jqXHR.responseText === "") ? "" : ($.parseJSON(jqXHR.responseText).message) ? 
+                $.parseJSON(jqXHR.responseText).message : $.parseJSON(jqXHR.responseText).error.message;
             this.printError(errorString);
         }.bind(this));
-    };
+    }
 
     getActorFromFaceID(faceID){
         var subscriptionKey = (config.azure.key);

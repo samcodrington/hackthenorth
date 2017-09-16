@@ -10380,8 +10380,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var jQuery = _jquery2.default; // TODO: remove after we're no longer using example code
-
 var ImageProcessor = function () {
     function ImageProcessor() {
         _classCallCheck(this, ImageProcessor);
@@ -10460,7 +10458,7 @@ var ImageProcessor = function () {
             }.bind(this)).fail(function (jqXHR, textStatus, errorThrown) {
                 // Display error message.
                 var errorString = errorThrown === "" ? "Error. " : errorThrown + " (" + jqXHR.status + "): ";
-                errorString += jqXHR.responseText === "" ? "" : jQuery.parseJSON(jqXHR.responseText).message ? jQuery.parseJSON(jqXHR.responseText).message : jQuery.parseJSON(jqXHR.responseText).error.message;
+                errorString += jqXHR.responseText === "" ? "" : _jquery2.default.parseJSON(jqXHR.responseText).message ? _jquery2.default.parseJSON(jqXHR.responseText).message : _jquery2.default.parseJSON(jqXHR.responseText).error.message;
                 this.printError(errorString);
             }.bind(this));
         }
