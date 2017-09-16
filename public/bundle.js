@@ -10338,9 +10338,9 @@ var _FeatureDetector = __webpack_require__(4);
 
 var _FeatureDetector2 = _interopRequireDefault(_FeatureDetector);
 
-var _DropZone = __webpack_require__(5);
+var _DatabaseManager = __webpack_require__(5);
 
-var _DropZone2 = _interopRequireDefault(_DropZone);
+var _DatabaseManager2 = _interopRequireDefault(_DatabaseManager);
 
 var _jquery = __webpack_require__(0);
 
@@ -10348,12 +10348,14 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import DropZone from './modules/DropZone';
 var iP = new _ImageProcessor2.default();
 (0, _jquery2.default)('#urlbutton').on('click', function () {
     iP.processImage();
 });
 var fD = new _FeatureDetector2.default();
 // var dZ = new DropZone(fD, iP);
+var dM = new _DatabaseManager2.default();
 
 /***/ }),
 /* 2 */
@@ -10607,125 +10609,45 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-// Drag and drop code primarily from:
-// https://css-tricks.com/drag-and-drop-file-uploading/
-var fD, iP;
+var DatabaseManager = function () {
+    function DatabaseManager() {
+        _classCallCheck(this, DatabaseManager);
 
-var DropZone = function () {
-    function DropZone(featureDetector, imageProcessor) {
-        _classCallCheck(this, DropZone);
-
-        fD = featureDetector;
-        iP = imageProcessor;
-        this.$form = (0, _jquery2.default)('.drop-zone');
-        this.$input = (0, _jquery2.default)('#file');
-
-        this.enableInputAutoSubmit();
-
-        if (fD.advancedUpload) {
-            this.$form.addClass('has-advanced-upload');
-
-            this.enableDragAndDrop();
-        }
-
-        this.enableSubmitEvent();
+        this.events();
     }
 
-    _createClass(DropZone, [{
-        key: 'enableInputAutoSubmit',
-        value: function enableInputAutoSubmit() {
+    _createClass(DatabaseManager, [{
+        key: 'events',
+        value: function events() {
             var _this = this;
 
-            this.$input.on('change', function (event) {
-                _this.$form.trigger('submit');
+            (0, _jquery2.default)('#nameButton').on('click', function () {
+                var query = {};
+                query.api_key = '190078ca8ad2919e5e468521e5d5114a';
+                query.query = (0, _jquery2.default)('#nameInput').val();
+
+                var url = 'https://api.themoviedb.org/3/search/person';
+
+                _jquery2.default.get(url, query, _this.onNameQueryResponse);
             });
         }
     }, {
-        key: 'enableDragAndDrop',
-        value: function enableDragAndDrop() {
-            var _this2 = this;
-
-            var droppedFiles = false;
-            this.$form.on('drag dragstart dragend dragover dragenter dragleave drop', function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }).on('dragover dragenter', function () {
-                _this2.$form.addClass('is-dragover');
-            }).on('dragleave dragend drop', function () {
-                _this2.$form.removeClass('is-dragover');
-            }).on('drop', function (event) {
-                _this2.droppedFiles = event.originalEvent.dataTransfer.files;
-                _this2.$form.trigger('submit');
-            });
-        }
-    }, {
-        key: 'enableSubmitEvent',
-        value: function enableSubmitEvent() {
-            this.$form.on('submit', function (event) {
-                if (this.$form.hasClass('is-uploading')) return false;
-
-                this.$form.addClass('is-uploading').removeClass('is-error');
-
-                if (fD.advancedUpload) {
-                    // Ajax for modern browsers
-                    event.preventDefault();
-                    event.stopPropagation();
-
-                    console.log('this.$form', this.$form[0]);
-                    var ajaxData = new FormData(document.getElementById('drop-zone'));
-
-                    if (this.droppedFiles && this.droppedFiles.length > 0) {
-                        // ajaxData = this.droppedFiles[0]
-                        var file = this.droppedFiles[0];
-
-                        var reader = new FileReader();
-                        reader.onload = function () {
-                            var arrayBuffer = this.result,
-                                array = new Uint8Array(arrayBuffer);
-                            // binaryString = String.fromCharCode.apply(null, array);
-
-                            // console.log('bS: ', binaryString);
-                            iP.verifyJonSnow(false, array);
-                        };
-                        reader.readAsArrayBuffer(file);
-
-                        // console.log('this.droppedFiles', this.droppedFiles);
-                        // $.each(this.droppedFiles, function(i, file) {
-                        //     console.log('file: ', file);
-                        //     ajaxData.append(this.$input.attr('name'), file);
-                        // }.bind(this));
-                    }
-
-                    // $.ajax({
-                    //     url: this.$form.attr('action'),
-                    //     type: this.$form.attr('method'),
-                    //     data: ajaxData,
-                    //     dataType: 'json',
-                    //     cache: false,
-                    //     contentType: false,
-                    //     processData: false,
-                    //     complete: () => {
-                    //         this.$form.removeClass('is-uploading');
-                    //     },
-                    //     success: (data) => {
-                    //         this.$form.addClass(data.success == true ? 'is-success' : 'is-error');
-                    //         if (!data.success) console.error(data.error); //TODO: replace with a visible span/div
-                    //     },
-                    //     error: () => {
-                    //         //TODO: log, alert, etc.
-                    //     }
-                    // });
-                } else {
-                        // TODO: ajax for legacy browsers
-                    }
-            }.bind(this));
+        key: 'onNameQueryResponse',
+        value: function onNameQueryResponse(response) {
+            console.log('response received!', response);
+            if (response && response.results.length > 0) {
+                var tmdbId = response.results[0].id;
+                (0, _jquery2.default)('#tmdbId').text(tmdbId);
+            } else {
+                (0, _jquery2.default)('#tmdbId').text('No ID was found');
+            }
         }
     }]);
 
-    return DropZone;
+    return DatabaseManager;
 }();
 
-exports.default = DropZone;
+exports.default = DatabaseManager;
 
 /***/ })
 /******/ ]);
