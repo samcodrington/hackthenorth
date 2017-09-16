@@ -10398,63 +10398,6 @@ var ImageProcessor = function () {
             }.bind(this));
         }
     }, {
-        key: 'processImage',
-        value: function processImage() {
-            // **********************************************
-            // *** Update or verify the following values. ***
-            // **********************************************
-
-            // Replace the subscriptionKey string value with your valid subscription key.
-            var subscriptionKey = _config2.default.azure.key;
-
-            // Replace or verify the region.
-            //
-            // You must use the same region in your REST API call as you used to obtain your subscription keys.
-            // For example, if you obtained your subscription keys from the westus region, replace
-            // "westcentralus" in the URI below with "westus".
-            //
-            // NOTE: Free trial subscription keys are generated in the westcentralus region, so if you are using
-            // a free trial subscription key, you should not need to change this region.
-            var uriBase = "https://westus.api.cognitive.microsoft.com/face/v1.0/detect";
-
-            // Request parameters.
-            var params = {
-                "returnFaceId": "true",
-                "returnFaceLandmarks": "false",
-                "returnFaceAttributes": "age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise"
-            };
-
-            // Display the image.
-            var sourceImageUrl = document.getElementById("inputImage").value;
-            document.querySelector("#sourceImage").src = sourceImageUrl;
-            console.log(sourceImageUrl);
-
-            // Perform the REST API call.
-            _jquery2.default.ajax({
-                url: uriBase + "?" + _jquery2.default.param(params),
-
-                // Request headers.
-                beforeSend: function beforeSend(xhrObj) {
-                    xhrObj.setRequestHeader("Content-Type", "application/json");
-                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
-                },
-
-                type: "POST",
-
-                // Request body.
-                data: '{"url": ' + '"' + sourceImageUrl + '"}'
-
-            }).done(function (data) {
-                // Show formatted JSON on webpage.
-                (0, _jquery2.default)("#responseTextArea").val(JSON.stringify(data, null, 2));
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                // Display error message.
-                var errorString = errorThrown === "" ? "Error. " : errorThrown + " (" + jqXHR.status + "): ";
-                errorString += jqXHR.responseText === "" ? "" : jQuery.parseJSON(jqXHR.responseText).message ? jQuery.parseJSON(jqXHR.responseText).message : jQuery.parseJSON(jqXHR.responseText).error.message;
-                alert(errorString);
-            });
-        }
-    }, {
         key: 'verifyJonSnow',
         value: function verifyJonSnow(url, imageData) {
             var subscriptionKey = _config2.default.azure.key;
@@ -10471,12 +10414,6 @@ var ImageProcessor = function () {
             if (url) {
                 // Display the image.
                 document.querySelector("#sourceImage").src = url;
-            } else {
-                // Collect the file
-                requestBody = imageData;
-                console.log(requestBody);
-                //TODO: Finish this
-                contentType = "application/octet-stream";
             }
 
             // Perform the REST API call.
@@ -10501,8 +10438,8 @@ var ImageProcessor = function () {
                 // Display error message.
                 var errorString = errorThrown === "" ? "Error. " : errorThrown + " (" + jqXHR.status + "): ";
                 errorString += jqXHR.responseText === "" ? "" : jQuery.parseJSON(jqXHR.responseText).message ? jQuery.parseJSON(jqXHR.responseText).message : jQuery.parseJSON(jqXHR.responseText).error.message;
-                alert(errorString);
-            });
+                this.printError(errorString);
+            }.bind(this));
         }
     }, {
         key: 'getActorFromFaceID',
@@ -10541,8 +10478,8 @@ var ImageProcessor = function () {
                 // Display error message.
                 var errorString = errorThrown === "" ? "Error. " : errorThrown + " (" + jqXHR.status + "): ";
                 errorString += jqXHR.responseText === "" ? "" : jQuery.parseJSON(jqXHR.responseText).message ? jQuery.parseJSON(jqXHR.responseText).message : jQuery.parseJSON(jqXHR.responseText).error.message;
-                alert(errorString);
-            });
+                this.printError(errorString);
+            }.bind(this));
         }
     }, {
         key: 'updatePercentage',
@@ -10550,6 +10487,14 @@ var ImageProcessor = function () {
             _updatePercentage *= 100; // Convert to value out of 100 instead of out of 1
             (0, _jquery2.default)('.result').removeClass('hidden');
             (0, _jquery2.default)('#percentage').text(_updatePercentage);
+            (0, _jquery2.default)('.error').addClass('hidden');
+        }
+    }, {
+        key: 'printError',
+        value: function printError(errorString) {
+            (0, _jquery2.default)('.result').addClass('hidden');
+            (0, _jquery2.default)('.error').removeClass('hidden');
+            (0, _jquery2.default)('.error__text').text(errorString);
         }
     }]);
 

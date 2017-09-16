@@ -1,0 +1,6 @@
+.error {
+    /* TODO: pick a better red */
+    color: $whiteBlue; 
+    background-color: $errorRed;
+    padding: 1rem;
+}
