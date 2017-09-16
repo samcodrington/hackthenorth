@@ -3,7 +3,7 @@ Schema = mongoose.Schema;
 
 var actorSchema = new Schema({
     PersonID: String,
-    ImdbID: String,
+    TmdbID: String,
     AppearedIn: [String]
 }, {collection: 'actors'});
 

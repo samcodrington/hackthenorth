@@ -145,3 +145,7 @@ a {
     background-color: #A8533F;
     padding: 1rem;
 }
+.img-container {
+    width: 100%;
+    height: auto;
+}
