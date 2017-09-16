@@ -107,7 +107,8 @@ class DatabaseManager {
         //TODO: 
     }
 
-    createAzurePerson(name, urls) {
+    //Entry Point
+    createAzurePerson(name, urls, tmdbId) {
         var query = {};
         query.api_key = config.azure.key;
         query.name = name;
@@ -115,13 +116,14 @@ class DatabaseManager {
         var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ person_group_id + "/persons"
 
         $.get(url,query, function(response) {
-            this.onAzurePersonResponse(response, urls);
+            this.onAzurePersonResponse(response, urls, name, tmdbId);
         });
         
     }
-    onAzurePersonResponse(response, urls){
+    onAzurePersonResponse(response, urls, name, tmdbId){
         var azureID = response.personID;
-        addFaces(azureID, urls)
+        insertActor(name, tmdbId, azureID);
+        addFaces(azureID, urls);
     }
     addFaces(personID, urls){
         for (let imageUrl of urls){
@@ -132,8 +134,9 @@ class DatabaseManager {
             
 
             var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/detect/";
-            $.get(url, query, addFacesResponse.bind(this, personID, imageUrl))
+            $.post(url, query, addFacesResponse.bind(this, personID, imageUrl))
         }
+        
     }
     addFacesResponse(response, personID,imageUrl){
         var faceID = response.faceID;
@@ -144,7 +147,7 @@ class DatabaseManager {
         query.personGroupId = person_group_id
         query.url = imageUrl;
         var url = "https://v1.0/persongroups/"+ person_group_id +"/persons/" + personId+ "/persistedFaces" + responseFace;
-        
+        $.post(url,query)
     }
 
 
