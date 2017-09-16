@@ -10685,6 +10685,7 @@ var DatabaseManager = function () {
             if (response && response.profiles.length > 0) {
                 (0, _jquery2.default)('#tmdbImgContainer').empty();
                 var i = 0;
+                var urls = [];
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
                 var _iteratorError = undefined;
@@ -10699,8 +10700,12 @@ var DatabaseManager = function () {
                             var url = this.base_url + this.img_size + '/' + profile.file_path;
 
                             (0, _jquery2.default)('#tmdbImgContainer').append((0, _jquery2.default)('<img>').attr('src', url));
+
+                            urls.push(url);
                         }
                     }
+
+                    //TODO: call sam's function
                 } catch (err) {
                     _didIteratorError = true;
                     _iteratorError = err;

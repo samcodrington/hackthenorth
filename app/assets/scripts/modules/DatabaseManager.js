@@ -64,6 +64,7 @@ class DatabaseManager {
         if (response && response.profiles.length > 0) {
             $('#tmdbImgContainer').empty();
             var i = 0;
+            var urls = [];
             for (let profile of response.profiles) {
                 if (i < max_image_set_size) { // Only need datasets of 5 or less
 
@@ -72,8 +73,12 @@ class DatabaseManager {
                     $('#tmdbImgContainer').append(
                         $('<img>').attr('src', url)
                     );
+
+                    urls.push(url);
                 }
             }
+
+            //TODO: call sam's function
         } else {
             $('#tmdbImgContainer').empty();
         }
