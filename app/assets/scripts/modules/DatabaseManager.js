@@ -138,6 +138,7 @@ class DatabaseManager {
         }
         
     }
+    //called in a loop from addFaces
     addFacesResponse(response, personID,imageUrl){
         var faceID = response.faceID;
         var responseFace = "&targetFace="+response.faceRectangle.left +","+ response.faceRectangle.top + "," 
@@ -147,7 +148,7 @@ class DatabaseManager {
         query.personGroupId = person_group_id
         query.url = imageUrl;
         var url = "https://v1.0/persongroups/"+ person_group_id +"/persons/" + personId+ "/persistedFaces" + responseFace;
-        $.post(url,query)
+        $.post(url,query) 
     }
 
 
