@@ -1,5 +1,6 @@
 @import 'base/_variables.css';
 @import 'base/_global.css';
+@import 'base/_mixins.css';
 
 
 @import 'modules/_title.css';
@@ -12,3 +13,5 @@
 @import 'modules/_textbox.css';
 @import 'modules/_error.css';
 @import 'modules/_img-container.css';
+@import 'modules/_column.css';
+@import 'modules/_card.css';

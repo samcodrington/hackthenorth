@@ -1,6 +1,7 @@
 .btn {
     display: inline-block;
     height: 4rem;
+    width: 100%;
     padding: 0 1rem;
     background: $lightBlue;
     font-family: 'Raleway', sans-serif;
