@@ -72,7 +72,7 @@ class ImageProcessor {
         });
     };
 
-    postFace(){
+    verifyJonSnow(isURL){
         // **********************************************
         // *** Update or verify the following values. ***
         // **********************************************
@@ -90,17 +90,25 @@ class ImageProcessor {
         // NOTE: Free trial subscription keys are generated in the westcentralus region, so if you are using
         // a free trial subscription key, you should not need to change this region.
         var uriBase = "https://westus.api.cognitive.microsoft.com/face/v1.0/detect";
+        var contentType = "application/json";
     
         // Request parameters.
         var params = {
             "returnFaceId": "true",
             "returnFaceLandmarks": "false",
-            "returnFaceAttributes": "age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise",
+            "returnFaceAttributes": "",
         };
-    
-        // Display the image.
-        var sourceImageUrl = document.getElementById("inputImage").value;
-        document.querySelector("#sourceImage").src = sourceImageUrl;
+        if (isURL == true){
+            // Display the image.
+            var sourceImageUrl = document.getElementById("inputImage").value;
+            document.querySelector("#sourceImage").src = sourceImageUrl;
+        }
+        else{
+            //Collect the file
+            //TODO: Finish this
+            contentType = "application/octet-stream";
+        }
+            
     
         // Perform the REST API call.
         $.ajax({
@@ -108,7 +116,7 @@ class ImageProcessor {
     
             // Request headers.
             beforeSend: function(xhrObj){
-                xhrObj.setRequestHeader("Content-Type","application/json");
+                xhrObj.setRequestHeader("Content-Type",contentType);
                 xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
             },
     
@@ -120,7 +128,8 @@ class ImageProcessor {
     
         .done(function(data) {
             // Show formatted JSON on webpage.
-            $("#responseTextArea").val(JSON.stringify(data, null, 2));
+            verifyJonSnowHelper(data.faceid)
+            
         })
     
         .fail(function(jqXHR, textStatus, errorThrown) {
@@ -131,6 +140,43 @@ class ImageProcessor {
             alert(errorString);
         });
     };
+    verifyJonSnowHelper(faceidToBeVerified){
+        console.log(faceid)
+        var subscriptionKey = (config.azure.key);
+        var uriBase = "https://westus.api.cognitive.microsoft.com/face/v1.0/verify";
+        var contentType = "application/json";
+        $.ajax({
+            url: uriBase + "?" + $.param(params),
+    
+            // Request headers.
+            beforeSend: function(xhrObj){
+                xhrObj.setRequestHeader("Content-Type",contentType);
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
+            },
+    
+            type: "POST",
+    
+            // Request body.
+            faceId: faceidToBeVerified,
+            personId:"9074cc0b-07cf-43ed-a0a3-96ff277b99e3",
+            personGroupId:"jon-snow"
+        })
+    
+        .done(function(data) {
+            // Show formatted JSON on webpage.
+            console.log(data);
+            $("#responseTextArea").val(JSON.stringify(data, null, 2));
+            
+        })
+    
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            // Display error message.
+            var errorString = (errorThrown === "") ? "Error. " : errorThrown + " (" + jqXHR.status + "): ";
+            errorString += (jqXHR.responseText === "") ? "" : (jQuery.parseJSON(jqXHR.responseText).message) ? 
+                jQuery.parseJSON(jqXHR.responseText).message : jQuery.parseJSON(jqXHR.responseText).error.message;
+            alert(errorString);
+        });
+    }
 
 }
 

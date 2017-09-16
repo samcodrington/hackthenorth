@@ -10448,8 +10448,8 @@ var ImageProcessor = function () {
             });
         }
     }, {
-        key: 'postFace',
-        value: function postFace() {
+        key: 'verifyJonSnow',
+        value: function verifyJonSnow(isURL) {
             // **********************************************
             // *** Update or verify the following values. ***
             // **********************************************
@@ -10467,17 +10467,23 @@ var ImageProcessor = function () {
             // NOTE: Free trial subscription keys are generated in the westcentralus region, so if you are using
             // a free trial subscription key, you should not need to change this region.
             var uriBase = "https://westus.api.cognitive.microsoft.com/face/v1.0/detect";
+            var contentType = "application/json";
 
             // Request parameters.
             var params = {
                 "returnFaceId": "true",
                 "returnFaceLandmarks": "false",
-                "returnFaceAttributes": "age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise"
+                "returnFaceAttributes": ""
             };
-
-            // Display the image.
-            var sourceImageUrl = document.getElementById("inputImage").value;
-            document.querySelector("#sourceImage").src = sourceImageUrl;
+            if (isURL == true) {
+                // Display the image.
+                var sourceImageUrl = document.getElementById("inputImage").value;
+                document.querySelector("#sourceImage").src = sourceImageUrl;
+            } else {
+                //Collect the file
+                //TODO: Finish this
+                contentType = "application/octet-stream";
+            }
 
             // Perform the REST API call.
             _jquery2.default.ajax({
@@ -10485,7 +10491,7 @@ var ImageProcessor = function () {
 
                 // Request headers.
                 beforeSend: function beforeSend(xhrObj) {
-                    xhrObj.setRequestHeader("Content-Type", "application/json");
+                    xhrObj.setRequestHeader("Content-Type", contentType);
                     xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
                 },
 
@@ -10495,6 +10501,39 @@ var ImageProcessor = function () {
                 data: '{"url": ' + '"' + sourceImageUrl + '"}'
             }).done(function (data) {
                 // Show formatted JSON on webpage.
+                verifyJonSnowHelper(data.faceid);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                // Display error message.
+                var errorString = errorThrown === "" ? "Error. " : errorThrown + " (" + jqXHR.status + "): ";
+                errorString += jqXHR.responseText === "" ? "" : jQuery.parseJSON(jqXHR.responseText).message ? jQuery.parseJSON(jqXHR.responseText).message : jQuery.parseJSON(jqXHR.responseText).error.message;
+                alert(errorString);
+            });
+        }
+    }, {
+        key: 'verifyJonSnowHelper',
+        value: function verifyJonSnowHelper(faceidToBeVerified) {
+            console.log(faceid);
+            var subscriptionKey = _config2.default.azure.key;
+            var uriBase = "https://westus.api.cognitive.microsoft.com/face/v1.0/verify";
+            var contentType = "application/json";
+            _jquery2.default.ajax({
+                url: uriBase + "?" + _jquery2.default.param(params),
+
+                // Request headers.
+                beforeSend: function beforeSend(xhrObj) {
+                    xhrObj.setRequestHeader("Content-Type", contentType);
+                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
+                },
+
+                type: "POST",
+
+                // Request body.
+                faceId: faceidToBeVerified,
+                personId: "9074cc0b-07cf-43ed-a0a3-96ff277b99e3",
+                personGroupId: "jon-snow"
+            }).done(function (data) {
+                // Show formatted JSON on webpage.
+                console.log(data);
                 (0, _jquery2.default)("#responseTextArea").val(JSON.stringify(data, null, 2));
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 // Display error message.
