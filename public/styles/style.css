@@ -25,20 +25,19 @@ a {
     position: absolute;
     height: 100%;
     width: 100%;
-    border: 10px dashed rgba(148,176,218, 0.5);
+    border: 8px dashed rgba(148,176,218, 0.5);
     border-radius: 10px;
 }
-.drop-zone__question-mark {
-        font-size: 6rem;
-        font-weight: bold;
-        color: rgba(148,176,218, 0.6);
+.drop-zone__input {
+        font-size: 2.5rem;
+        color: #94B0DA;
         text-align: center;
     }
 .drop-zone__container {
         position: relative;
-        width: 75%;
+        width: 100%;
         /* Relative padding is based off of parent width, results in drop-zone being square */
-        padding-bottom: 75%;
+        padding-bottom: 100%;
         height: 0;
     }
 .centered-vertically {
