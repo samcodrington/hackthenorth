@@ -10613,6 +10613,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var person_group_id = 'group1';
+
 var api_key = '190078ca8ad2919e5e468521e5d5114a';
 var uri_root = 'https://api.themoviedb.org/3/';
 var max_image_set_size = 5;
@@ -10633,13 +10635,14 @@ var DatabaseManager = function () {
             var _this = this;
 
             (0, _jquery2.default)('#nameButton').on('click', function () {
+                var name = (0, _jquery2.default)('#nameInput').val();
                 var query = {};
                 query.api_key = api_key;
-                query.query = (0, _jquery2.default)('#nameInput').val();
+                query.query = name;
 
                 var url = uri_root + 'search/person';
 
-                _jquery2.default.get(url, query, _this.onNameQueryResponse.bind(_this));
+                _jquery2.default.get(url, query, _this.onNameQueryResponse.bind(_this, name));
             });
         }
     }, {
@@ -10674,8 +10677,7 @@ var DatabaseManager = function () {
         }
     }, {
         key: 'onNameQueryResponse',
-        value: function onNameQueryResponse(response) {
-            console.log('response received!', response);
+        value: function onNameQueryResponse(name, response) {
             if (response && response.results.length > 0) {
                 var tmdbId = response.results[0].id;
                 (0, _jquery2.default)('#tmdbId').text(tmdbId);
@@ -10685,14 +10687,14 @@ var DatabaseManager = function () {
 
                 var url = uri_root + 'person/' + tmdbId + '/images';
                 // Get Image from TMDB
-                _jquery2.default.get(url, query, this.onImageQueryResponse.bind(this, tmdbId));
+                _jquery2.default.get(url, query, this.onImageQueryResponse.bind(this, tmdbId, name));
             } else {
                 (0, _jquery2.default)('#tmdbId').text('No ID was found');
             }
         }
     }, {
         key: 'onImageQueryResponse',
-        value: function onImageQueryResponse(response, tmdbId) {
+        value: function onImageQueryResponse(tmdbId, name, response) {
             if (response && response.profiles.length > 0) {
                 (0, _jquery2.default)('#tmdbImgContainer').empty();
                 var i = 0;
@@ -10713,6 +10715,7 @@ var DatabaseManager = function () {
                             (0, _jquery2.default)('#tmdbImgContainer').append((0, _jquery2.default)('<img>').attr('src', url));
 
                             urls.push(url);
+                            i++;
                         }
                     }
                 } catch (err) {
@@ -10730,7 +10733,7 @@ var DatabaseManager = function () {
                     }
                 }
 
-                createAzurePerson(tmdbId, urls);
+                this.createAzurePerson(name, urls, tmdbId);
             } else {
                 (0, _jquery2.default)('#tmdbImgContainer').empty();
             }
@@ -10747,42 +10750,42 @@ var DatabaseManager = function () {
         }
     }, {
         key: 'onAzurePersonGroupResponse',
-        value: function onAzurePersonGroupResponse(response) {
-            //TODO: 
-        }
+        value: function onAzurePersonGroupResponse(response) {}
+        //TODO: 
+
+
+        // Entry Point of Azure Insertion
+
     }, {
         key: 'createAzurePerson',
-        value: function createAzurePerson(name, urls) {
-            var query = {};
-            query.api_key = _config2.default.azure.key;
-            query.name = name;
-            var person_group_id = null; //TODO:
+        value: function createAzurePerson(name, urls, tmdbId) {
             var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/" + person_group_id + "/persons";
 
-            _jquery2.default.get(url, query, function (response) {
-                this.onAzurePersonResponse(response, urls);
-            });
+            this.postRequest(url, { "name": name }, this.onAzurePersonResponse.bind(this, urls, name, tmdbId));
         }
     }, {
         key: 'onAzurePersonResponse',
-        value: function onAzurePersonResponse(response, urls) {
-            var azureID = response.personID;
-            addFaces(azureID, urls);
+        value: function onAzurePersonResponse(urls, name, tmdbId, response) {
+            var azureID = response.personId;
+            this.insertActor(name, tmdbId, azureID);
+            this.detectFaces(azureID, urls);
         }
     }, {
-        key: 'addFaces',
-        value: function addFaces(personID, urls) {
+        key: 'detectFaces',
+        value: function detectFaces(personID, urls) {
             var _iteratorNormalCompletion2 = true;
             var _didIteratorError2 = false;
             var _iteratorError2 = undefined;
 
             try {
                 for (var _iterator2 = urls[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var url = _step2.value;
+                    var imageUrl = _step2.value;
 
-                    var query = {};
-                    query.api_key = _config2.default.azure.key;
-                    query.url = url;
+
+                    // Detect all faces and make Azure API call to add them
+                    var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/detect/";
+
+                    this.postRequest(url, { 'url': imageUrl }, this.addFacesResponse.bind(this, personID, imageUrl));
                 }
             } catch (err) {
                 _didIteratorError2 = true;
@@ -10798,6 +10801,54 @@ var DatabaseManager = function () {
                     }
                 }
             }
+        }
+
+        // Called in a loop from addFaces
+
+    }, {
+        key: 'addFacesResponse',
+        value: function addFacesResponse(personID, imageUrl, response) {
+            console.log('--');
+            console.log(personID);
+            console.log(imageUrl);
+            console.log(response);
+            console.log('--');
+            var faceID = response.faceID;
+            var responseFace = "&targetFace=" + response.faceRectangle.left + "," + response.faceRectangle.top + "," + response.faceRectangle.right + "," + response.faceRectangle.bottom;
+
+            // Add face to person
+            var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/" + person_group_id + "/persons/" + personId + "/persistedFaces" + responseFace;
+
+            this.postRequest(url, { 'url': imageUrl });
+            // $.ajax({
+            //     url: url,
+            //     type: 'post',
+            //     data: {
+            //         'url': imageUrl
+            //     },
+            //     headers: {
+            //         'Ocp-Apim-Subscription-Key': config.azure.key,
+            //         'Content-Type': 'application/json'
+            //     }
+            // });
+        }
+    }, {
+        key: 'postRequest',
+        value: function postRequest(url, data, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.setRequestHeader('Ocp-Apim-Subscription-Key', _config2.default.azure.key);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var json = JSON.parse(xhr.responseText);
+                    if (callback) {
+                        callback(json);
+                    }
+                }
+            }.bind(this);
+            var data = JSON.stringify(data);
+            xhr.send(data);
         }
     }]);
 

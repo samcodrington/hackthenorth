@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import config from '../../../../public/data/config.js';
 
-let person_group_id = group1;//TODO:
+let person_group_id = 'group1';
 
 let api_key = '190078ca8ad2919e5e468521e5d5114a';
 let uri_root = 'https://api.themoviedb.org/3/'
@@ -18,13 +18,14 @@ class DatabaseManager {
 
     events() {
         $('#nameButton').on('click', () => {
+            var name = $('#nameInput').val();
             var query = {};
             query.api_key = api_key;
-            query.query = $('#nameInput').val();
+            query.query = name;
 
             var url = uri_root + 'search/person';
 
-            $.get(url, query, this.onNameQueryResponse.bind(this));
+            $.get(url, query, this.onNameQueryResponse.bind(this, name));
         });
     }
 
@@ -53,8 +54,7 @@ class DatabaseManager {
             console.log('Success! Actor ' + name + ' inserted.');
         })
     }
-    onNameQueryResponse(response) {
-        console.log('response received!', response);
+    onNameQueryResponse(name, response) {
         if (response && response.results.length > 0) {
             var tmdbId = response.results[0].id;
             $('#tmdbId').text(tmdbId);
@@ -64,13 +64,13 @@ class DatabaseManager {
 
             var url = uri_root + 'person/' + tmdbId + '/images';
             // Get Image from TMDB
-            $.get(url, query, this.onImageQueryResponse.bind(this, tmdbId));
+            $.get(url, query, this.onImageQueryResponse.bind(this, tmdbId, name));
         } else {
             $('#tmdbId').text('No ID was found');
         }
     }
 
-    onImageQueryResponse(response, tmdbId) {
+    onImageQueryResponse(tmdbId, name, response) {
         if (response && response.profiles.length > 0) {
             $('#tmdbImgContainer').empty();
             var i = 0;
@@ -85,10 +85,11 @@ class DatabaseManager {
                     );
 
                     urls.push(url);
+                    i++;
                 }
             }
 
-            createAzurePerson(tmdbId, urls); 
+            this.createAzurePerson(name, urls, tmdbId); 
         } else {
             $('#tmdbImgContainer').empty();
         }
@@ -107,48 +108,74 @@ class DatabaseManager {
         //TODO: 
     }
 
-    //Entry Point
+    // Entry Point of Azure Insertion
     createAzurePerson(name, urls, tmdbId) {
-        var query = {};
-        query.api_key = config.azure.key;
-        query.name = name;
-        
-        var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ person_group_id + "/persons"
+        var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ person_group_id + "/persons";
 
-        $.get(url,query, function(response) {
-            this.onAzurePersonResponse(response, urls, name, tmdbId);
-        });
+        this.postRequest(url, {"name": name}, this.onAzurePersonResponse.bind(this, urls, name, tmdbId));
         
     }
-    onAzurePersonResponse(response, urls, name, tmdbId){
-        var azureID = response.personID;
-        insertActor(name, tmdbId, azureID);
-        addFaces(azureID, urls);
+
+    onAzurePersonResponse(urls, name, tmdbId, response){
+        var azureID = response.personId;
+        this.insertActor(name, tmdbId, azureID);
+        this.detectFaces(azureID, urls);
     }
-    addFaces(personID, urls){
+
+    detectFaces(personID, urls){
         for (let imageUrl of urls){
-            //detect all faces and make API call to add them
-            var query = {};
-            query.api_key = config.azure.key;
-            query.url = imageUrl;
-            
 
+            // Detect all faces and make Azure API call to add them
             var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/detect/";
-            $.post(url, query, addFacesResponse.bind(this, personID, imageUrl))
+            
+            this.postRequest(url, {'url': imageUrl}, this.addFacesResponse.bind(this, personID, imageUrl));
         }
         
     }
-    //called in a loop from addFaces
-    addFacesResponse(response, personID,imageUrl){
+
+    // Called in a loop from addFaces
+    addFacesResponse(personID, imageUrl, response){
+        console.log('--');
+        console.log(personID);
+        console.log(imageUrl);
+        console.log(response);
+        console.log('--');
         var faceID = response.faceID;
         var responseFace = "&targetFace="+response.faceRectangle.left +","+ response.faceRectangle.top + "," 
                 + response.faceRectangle.right +","+response.faceRectangle.bottom;
-        //Add face to person
-        query.personId = personID;
-        query.personGroupId = person_group_id
-        query.url = imageUrl;
-        var url = "https://v1.0/persongroups/"+ person_group_id +"/persons/" + personId+ "/persistedFaces" + responseFace;
-        $.post(url,query) 
+
+        // Add face to person
+        var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ person_group_id +"/persons/" + personId + "/persistedFaces" + responseFace;
+
+        this.postRequest(url, {'url': imageUrl});
+        // $.ajax({
+        //     url: url,
+        //     type: 'post',
+        //     data: {
+        //         'url': imageUrl
+        //     },
+        //     headers: {
+        //         'Ocp-Apim-Subscription-Key': config.azure.key,
+        //         'Content-Type': 'application/json'
+        //     }
+        // });
+    }
+
+    postRequest(url, data, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.setRequestHeader('Ocp-Apim-Subscription-Key', config.azure.key);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var json = JSON.parse(xhr.responseText);
+                if (callback) {
+                    callback(json);
+                }
+            }
+        }.bind(this);
+        var data = JSON.stringify(data);
+        xhr.send(data);
     }
 
 
