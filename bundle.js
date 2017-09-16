@@ -10609,11 +10609,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var api_key = '190078ca8ad2919e5e468521e5d5114a';
+var uri_root = 'https://api.themoviedb.org/3/';
+var max_image_set_size = 5;
+
 var DatabaseManager = function () {
     function DatabaseManager() {
         _classCallCheck(this, DatabaseManager);
 
         this.events();
+        this.cacheTmdbConfig();
+        this.base_url = null;
+        this.img_size = null;
     }
 
     _createClass(DatabaseManager, [{
@@ -10623,12 +10630,31 @@ var DatabaseManager = function () {
 
             (0, _jquery2.default)('#nameButton').on('click', function () {
                 var query = {};
-                query.api_key = '190078ca8ad2919e5e468521e5d5114a';
+                query.api_key = api_key;
                 query.query = (0, _jquery2.default)('#nameInput').val();
 
-                var url = 'https://api.themoviedb.org/3/search/person';
+                var url = uri_root + 'search/person';
 
-                _jquery2.default.get(url, query, _this.onNameQueryResponse);
+                _jquery2.default.get(url, query, _this.onNameQueryResponse.bind(_this));
+            });
+        }
+    }, {
+        key: 'cacheTmdbConfig',
+        value: function cacheTmdbConfig() {
+            var _this2 = this;
+
+            var query = {};
+            query.api_key = api_key;
+            var url = uri_root + 'configuration';
+
+            _jquery2.default.get(url, query, function (response) {
+                if (response) {
+                    _this2.base_url = response.images.base_url;
+                    var profile_sizes = response.images.profile_sizes;
+                    _this2.img_size = 'original';
+                } else {
+                    //TODO: error handling
+                }
             });
         }
     }, {
@@ -10638,8 +10664,55 @@ var DatabaseManager = function () {
             if (response && response.results.length > 0) {
                 var tmdbId = response.results[0].id;
                 (0, _jquery2.default)('#tmdbId').text(tmdbId);
+
+                var query = {};
+                query.api_key = api_key;
+
+                var url = uri_root + 'person/' + tmdbId + '/images';
+                // Get Image from TMDB
+                _jquery2.default.get(url, query, this.onImageQueryResponse.bind(this));
             } else {
                 (0, _jquery2.default)('#tmdbId').text('No ID was found');
+            }
+        }
+    }, {
+        key: 'onImageQueryResponse',
+        value: function onImageQueryResponse(response) {
+            if (response && response.profiles.length > 0) {
+                (0, _jquery2.default)('#tmdbImgContainer').empty();
+                var i = 0;
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = response.profiles[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var profile = _step.value;
+
+                        if (i < max_image_set_size) {
+                            // Only need datasets of 5 or less
+
+                            var url = this.base_url + this.img_size + '/' + profile.file_path;
+
+                            (0, _jquery2.default)('#tmdbImgContainer').append((0, _jquery2.default)('<img>').attr('src', url));
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+            } else {
+                (0, _jquery2.default)('#tmdbImgContainer').empty();
             }
         }
     }]);
