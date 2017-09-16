@@ -10613,6 +10613,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
@@ -10621,15 +10623,106 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var DropZone = function DropZone(featureDetector) {
-    _classCallCheck(this, DropZone);
+// Drag and drop code primarily from:
+// https://css-tricks.com/drag-and-drop-file-uploading/
+var fD;
 
-    this.$form = (0, _jquery2.default)('.drop-zone');
+var DropZone = function () {
+    function DropZone(featureDetector) {
+        _classCallCheck(this, DropZone);
 
-    if (featureDetector.advancedUpload) {
-        this.$form.addClass('has-advanced-upload');
+        fD = featureDetector;
+        this.$form = (0, _jquery2.default)('.drop-zone');
+        this.$input = (0, _jquery2.default)('#file');
+
+        this.enableInputAutoSubmit();
+
+        if (fD.advancedUpload) {
+            this.$form.addClass('has-advanced-upload');
+
+            this.enableDragAndDrop();
+        }
+
+        this.enableSubmitEvent();
     }
-};
+
+    _createClass(DropZone, [{
+        key: 'enableInputAutoSubmit',
+        value: function enableInputAutoSubmit() {
+            var _this = this;
+
+            this.$input.on('change', function (event) {
+                _this.$form.trigger('submit');
+            });
+        }
+    }, {
+        key: 'enableDragAndDrop',
+        value: function enableDragAndDrop() {
+            var _this2 = this;
+
+            var droppedFiles = false;
+            this.$form.on('drag dragstart dragend dragover dragenter dragleave drop', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }).on('dragover dragenter', function () {
+                _this2.$form.addClass('is-dragover');
+            }).on('dragleave dragend drop', function () {
+                _this2.$form.removeClass('is-dragover');
+            }).on('drop', function (event) {
+                _this2.droppedFiles = event.originalEvent.dataTransfer.files;
+                _this2.$form.trigger('submit');
+            });
+        }
+    }, {
+        key: 'enableSubmitEvent',
+        value: function enableSubmitEvent() {
+            var _this3 = this;
+
+            this.$form.on('submit', function (event) {
+                if (_this3.$form.hasClass('is-uploading')) return false;
+
+                _this3.$form.addClass('is-uploading').removeClass('is-error');
+
+                if (fD.advancedUpload) {
+                    // Ajax for modern browsers
+                    event.preventDefault();
+
+                    var ajaxData = new FormData(_this3.$form.get(0));
+
+                    if (_this3.droppedFiles) {
+                        _jquery2.default.each(_this3.droppedFiles, function (i, file) {
+                            ajaxData.append(this.$input.attr('name'), file);
+                        }.bind(_this3));
+                    }
+
+                    _jquery2.default.ajax({
+                        url: _this3.$form.attr('action'),
+                        type: _this3.$form.attr('method'),
+                        data: ajaxData,
+                        dataType: 'json',
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        complete: function complete() {
+                            _this3.$form.removeClass('is-uploading');
+                        },
+                        success: function success(data) {
+                            _this3.$form.addClass(data.success == true ? 'is-success' : 'is-error');
+                            if (!data.success) console.error(data.error); //TODO: replace with a visible span/div
+                        },
+                        error: function error() {
+                            //TODO: log, alert, etc.
+                        }
+                    });
+                } else {
+                    // TODO: ajax for legacy browsers
+                }
+            });
+        }
+    }]);
+
+    return DropZone;
+}();
 
 exports.default = DropZone;
 

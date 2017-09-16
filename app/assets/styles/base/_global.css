@@ -1,7 +1,8 @@
 body {
     margin: 0;
-    background-color: $offWhiteBlue;
+    background-color: $whiteBlue;
     font-family: 'Raleway', sans-serif;
+    color: $darkGrey;
 }
 
 img {
@@ -18,4 +19,13 @@ img {
 a {
     text-decoration: none;
     cursor: pointer;
+}
+
+.hidden {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
 }
