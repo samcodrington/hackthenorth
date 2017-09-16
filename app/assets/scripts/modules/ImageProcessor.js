@@ -15,6 +15,7 @@ class ImageProcessor {
     
         // Replace the subscriptionKey string value with your valid subscription key.
         var subscriptionKey = (config.azure.key);
+        console.log("API Key is " + subscriptionKey);
     
         // Replace or verify the region.
         //
@@ -24,7 +25,7 @@ class ImageProcessor {
         //
         // NOTE: Free trial subscription keys are generated in the westcentralus region, so if you are using
         // a free trial subscription key, you should not need to change this region.
-        var uriBase = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect";
+        var uriBase = "https://westus.api.cognitive.microsoft.com/face/v1.0/detect";
     
         // Request parameters.
         var params = {
