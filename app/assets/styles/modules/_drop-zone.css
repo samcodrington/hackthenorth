@@ -1,0 +1,22 @@
+.drop-zone {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    border: 10px dashed rgba($lightBlue, 0.5);
+    border-radius: 10px;
+
+    &__question-mark {
+        font-size: 6rem;
+        font-weight: bold;
+        color: rgba($lightBlue, 0.6);
+        text-align: center;
+    }
+
+    &__container {
+        position: relative;
+        width: 75%;
+        /* Relative padding is based off of parent width, results in drop-zone being square */
+        padding-bottom: 75%;
+        height: 0;
+    }
+}
