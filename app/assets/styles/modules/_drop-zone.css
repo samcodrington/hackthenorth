@@ -2,13 +2,13 @@
     position: absolute;
     height: 100%;
     width: 100%;
-    border: 8px dashed rgba($lightBlue, 0.5);
-    border-radius: 10px;
+    background: $lighterBlue;
+    border-radius: 5px;
+    font-size: 2.5rem;
+    color: $darkGrey;
+    text-align: center;
 
     &__input {
-        font-size: 2.5rem;
-        color: $lightBlue;
-        text-align: center;
     }
 
     &__container {
@@ -19,8 +19,51 @@
         height: 0;
     }
 
+    &__button {
+        /* visibility: hidden; */
+    }
+
+    &__file + label {
+        cursor: pointer;
+        background-color: $lighterMediumBlue;
+        /* border-radius: 5px; */
+        padding: 5px 10px;
+        color: $lightBlue;
+
+        &:hover {
+            color: $whiteBlue;
+        }
+    }
+
+    &__file:focus + label {
+        background-color: $mediumBlue;
+        outline: 1px dotted #000;
+        outline: -webkit-focus-ring-color auto 5px;
+    }
+
+    &.has-advanced-upload {
+        border-radius: 0px;
+        background-color: $lightBlue;
+        outline: 4px dashed rgba($darkGrey, 0.25);
+        outline-offset: -15px;
+    }
+
     &.has-advanced-upload .drop-zone__dragndrop {
         display: inline;
+    }
+
+    &.is-dragover {
+        background-color: $lighterBlue;
+    }
+
+    &.is-uploading {
+        & .drop-zone__input {
+            visibility: hidden;
+        }
+
+        & .drop-zone__uploading {
+            display: block;
+        }
     }
 }
 
