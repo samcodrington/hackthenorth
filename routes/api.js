@@ -28,9 +28,14 @@ router.get('/actor', function(req, res, next) {
 });
 
 router.post('/actor', function(req, res, next) {
-    console.log('PersonID' + body.PersonID);
-    console.log('TmdbID' + body.TmdbID);
-    console.log('AppearedIn.length()' + body.AppearedIn.length());
+    var actorData = {
+        name: body.name,
+        personId: body.personId,
+        tmdbId: body.tmdbId
+    }
+    var actor = new ActorModel(actorData);
+    actor.save();
+    res.send(200);
 });
 
 module.exports = router;

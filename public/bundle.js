@@ -10662,6 +10662,17 @@ var DatabaseManager = function () {
             });
         }
     }, {
+        key: 'insertActor',
+        value: function insertActor(name, tmdbId, personId) {
+            var data = {};
+            data.name = name;
+            data.tmdbId = tmdbId;
+            data.personId = personId;
+            _jquery2.default.post('/api/actor', data, function () {
+                console.log('Success! Actor ' + name + ' inserted.');
+            });
+        }
+    }, {
         key: 'onNameQueryResponse',
         value: function onNameQueryResponse(response) {
             console.log('response received!', response);
@@ -10674,14 +10685,14 @@ var DatabaseManager = function () {
 
                 var url = uri_root + 'person/' + tmdbId + '/images';
                 // Get Image from TMDB
-                _jquery2.default.get(url, query, this.onImageQueryResponse.bind(this));
+                _jquery2.default.get(url, query, this.onImageQueryResponse.bind(this, tmdbId));
             } else {
                 (0, _jquery2.default)('#tmdbId').text('No ID was found');
             }
         }
     }, {
         key: 'onImageQueryResponse',
-        value: function onImageQueryResponse(response) {
+        value: function onImageQueryResponse(response, tmdbId) {
             if (response && response.profiles.length > 0) {
                 (0, _jquery2.default)('#tmdbImgContainer').empty();
                 var i = 0;
@@ -10704,8 +10715,6 @@ var DatabaseManager = function () {
                             urls.push(url);
                         }
                     }
-
-                    //TODO: call sam's function
                 } catch (err) {
                     _didIteratorError = true;
                     _iteratorError = err;
@@ -10720,6 +10729,8 @@ var DatabaseManager = function () {
                         }
                     }
                 }
+
+                createAzurePerson(tmdbId, urls);
             } else {
                 (0, _jquery2.default)('#tmdbImgContainer').empty();
             }
@@ -10731,23 +10742,62 @@ var DatabaseManager = function () {
             query.api_key = _config2.default.azure.key;
             query.name = groupName;
             var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/" + groupId + "/persons";
+
+            _jquery2.default.get(url, query, this.onAzurePersonGroupResponse);
+        }
+    }, {
+        key: 'onAzurePersonGroupResponse',
+        value: function onAzurePersonGroupResponse(response) {
+            //TODO: 
         }
     }, {
         key: 'createAzurePerson',
-        value: function createAzurePerson(name) {
+        value: function createAzurePerson(name, urls) {
             var query = {};
             query.api_key = _config2.default.azure.key;
             query.name = name;
             var person_group_id = null; //TODO:
             var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/" + person_group_id + "/persons";
 
-            _jquery2.default.get(url, query, this.onAzurePersonResponse);
+            _jquery2.default.get(url, query, function (response) {
+                this.onAzurePersonResponse(response, urls);
+            });
         }
     }, {
         key: 'onAzurePersonResponse',
-        value: function onAzurePersonResponse(response) {
+        value: function onAzurePersonResponse(response, urls) {
             var azureID = response.personID;
-            (0, _jquery2.default)('#AzureID').text(azureID);
+            addFaces(azureID, urls);
+        }
+    }, {
+        key: 'addFaces',
+        value: function addFaces(personID, urls) {
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = urls[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var url = _step2.value;
+
+                    var query = {};
+                    query.api_key = _config2.default.azure.key;
+                    query.url = url;
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
+            }
         }
     }]);
 

@@ -43,6 +43,16 @@ class DatabaseManager {
         });
     }
 
+    insertActor(name, tmdbId, personId) {
+        var data = {};
+        data.name = name;
+        data.tmdbId = tmdbId;
+        data.personId = personId;
+        $.post('/api/actor', data, () => {
+            console.log('Success! Actor ' + name + ' inserted.');
+        })
+    }
+
     onNameQueryResponse(response) {
         console.log('response received!', response);
         if (response && response.results.length > 0) {
@@ -54,13 +64,13 @@ class DatabaseManager {
 
             var url = uri_root + 'person/' + tmdbId + '/images';
             // Get Image from TMDB
-            $.get(url, query, this.onImageQueryResponse.bind(this));
+            $.get(url, query, this.onImageQueryResponse.bind(this, tmdbId));
         } else {
             $('#tmdbId').text('No ID was found');
         }
     }
 
-    onImageQueryResponse(response) {
+    onImageQueryResponse(response, tmdbId) {
         if (response && response.profiles.length > 0) {
             $('#tmdbImgContainer').empty();
             var i = 0;
@@ -78,7 +88,7 @@ class DatabaseManager {
                 }
             }
 
-            //TODO: call sam's function
+            createAzurePerson(tmdbId, urls); 
         } else {
             $('#tmdbImgContainer').empty();
         }
