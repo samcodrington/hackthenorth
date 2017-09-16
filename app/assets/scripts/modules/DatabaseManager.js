@@ -1,13 +1,14 @@
 import $ from 'jquery';
 import config from '../../../../public/data/config.js';
 
+let person_group_id = group1;//TODO:
 
 let api_key = '190078ca8ad2919e5e468521e5d5114a';
 let uri_root = 'https://api.themoviedb.org/3/'
 let max_image_set_size = 5;
 
 class DatabaseManager {
-
+    
     constructor() {
         this.events();
         this.cacheTmdbConfig();
@@ -52,13 +53,12 @@ class DatabaseManager {
             console.log('Success! Actor ' + name + ' inserted.');
         })
     }
-
     onNameQueryResponse(response) {
         console.log('response received!', response);
         if (response && response.results.length > 0) {
             var tmdbId = response.results[0].id;
             $('#tmdbId').text(tmdbId);
-
+            
             var query = {};
             query.api_key = api_key;
 
@@ -111,7 +111,7 @@ class DatabaseManager {
         var query = {};
         query.api_key = config.azure.key;
         query.name = name;
-        var person_group_id = null;//TODO:
+        
         var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ person_group_id + "/persons"
 
         $.get(url,query, function(response) {
@@ -124,13 +124,29 @@ class DatabaseManager {
         addFaces(azureID, urls)
     }
     addFaces(personID, urls){
-        for (let url of urls){
+        for (let imageUrl of urls){
+            //detect all faces and make API call to add them
             var query = {};
             query.api_key = config.azure.key;
-            query.url = url;
+            query.url = imageUrl;
+            
 
+            var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/detect/";
+            $.get(url, query, addFacesResponse.bind(this, personID, imageUrl))
         }
     }
+    addFacesResponse(response, personID,imageUrl){
+        var faceID = response.faceID;
+        var responseFace = "&targetFace="+response.faceRectangle.left +","+ response.faceRectangle.top + "," 
+                + response.faceRectangle.right +","+response.faceRectangle.bottom;
+        //Add face to person
+        query.personId = personID;
+        query.personGroupId = person_group_id
+        query.url = imageUrl;
+        var url = "https://v1.0/persongroups/"+ person_group_id +"/persons/" + personId+ "/persistedFaces" + responseFace;
+        
+    }
+
 
 }
 
