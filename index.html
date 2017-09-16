@@ -12,14 +12,15 @@
 
             <div class='drop-zone__container'>
                 <form class='drop-zone' method="POST" action="" enctype="multipart/form-data">
-                    <div class="drop-zone__input centered-vertically text-align-center">
+                    <div class='drop-zone__input centered-vertically text-align-center'>
                         <label for="file">
-                            <strong>Choose a file</strong>
-                            <span class="drop-zone--dragndrop"> or drag it here</span>.
-                        </label>
+                            <strong>Choose a file</strong><span class='drop-zone__dragndrop'> or drag it here</span>.</label>
                         <br>
-                        <button class="drop-zone__button" type="submit">Upload</button>
+                        <button class='drop-zone__button' type="submit">Upload</button>
                     </div>
+                    <div class='drop-zone__uploading drop-zone__input centered-vertically text-align-center'>Uploading&hellip;</div>
+                    <div class='drop-zone__success drop-zone__input centered-vertically text-align-center'>Done!</div>
+                    <div class='drop-zone__error drop-zone__input centered-vertically text-align-center'>Error</div>
                 </form>
             </div>
             <img src='app/assets/img/kit.jpg'></img>
