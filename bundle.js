@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10330,7 +10330,25 @@ return jQuery;
 "use strict";
 
 
-var _ImageProcessor = __webpack_require__(2);
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var config = {
+    azure: {
+        key: '54c8c00683f845348a1ff443a3fa536a'
+    }
+};
+
+exports.default = config;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _ImageProcessor = __webpack_require__(3);
 
 var _ImageProcessor2 = _interopRequireDefault(_ImageProcessor);
 
@@ -10358,7 +10376,7 @@ var fD = new _FeatureDetector2.default();
 var dM = new _DatabaseManager2.default();
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10374,7 +10392,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _config = __webpack_require__(3);
+var _config = __webpack_require__(1);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -10536,24 +10554,6 @@ var ImageProcessor = function () {
 exports.default = ImageProcessor;
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var config = {
-    azure: {
-        key: '54c8c00683f845348a1ff443a3fa536a'
-    }
-};
-
-exports.default = config;
-
-/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10604,6 +10604,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
+
+var _config = __webpack_require__(1);
+
+var _config2 = _interopRequireDefault(_config);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10714,6 +10718,31 @@ var DatabaseManager = function () {
             } else {
                 (0, _jquery2.default)('#tmdbImgContainer').empty();
             }
+        }
+    }, {
+        key: 'createAzurePersonGroup',
+        value: function createAzurePersonGroup(groupId, groupName) {
+            var query = {};
+            query.api_key = _config2.default.azure.key;
+            query.name = groupName;
+            var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/" + groupId + "/persons";
+        }
+    }, {
+        key: 'createAzurePerson',
+        value: function createAzurePerson(name) {
+            var query = {};
+            query.api_key = _config2.default.azure.key;
+            query.name = name;
+            var person_group_id = null; //TODO:
+            var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/" + person_group_id + "/persons";
+
+            _jquery2.default.get(url, query, this.onAzurePersonResponse);
+        }
+    }, {
+        key: 'onAzurePersonResponse',
+        value: function onAzurePersonResponse(response) {
+            var azureID = response.personID;
+            (0, _jquery2.default)('#AzureID').text(azureID);
         }
     }]);
 
