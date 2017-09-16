@@ -1,4 +1,6 @@
 import $ from 'jquery';
+import config from '../../../../public/data/config.js';
+
 
 class DatabaseManager {
 
@@ -27,6 +29,28 @@ class DatabaseManager {
             $('#tmdbId').text('No ID was found');
         }
     }
+
+    createAzurePersonGroup(groupId, groupName){
+        var query = {};
+        query.api_key = config.azure.key;
+        query.name = groupName;
+        var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ groupId + "/persons"
+    }
+
+    createAzurePerson(name) {
+        var query = {};
+        query.api_key = config.azure.key;
+        query.name = name;
+        var person_group_id = null;//TODO:
+        var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ person_group_id + "/persons"
+
+        $.get(url,query,this.onAzurePersonResponse)
+    }
+    onAzurePersonResponse(response){
+        var azureID = response.personID;
+        $('#AzureID').text(azureID);
+    }
+
 
 }
 
