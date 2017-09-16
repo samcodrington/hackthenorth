@@ -60,123 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _ImageProcessor = __webpack_require__(1);
-
-var _ImageProcessor2 = _interopRequireDefault(_ImageProcessor);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var iP = new _ImageProcessor2.default();
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _jquery = __webpack_require__(2);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _config = __webpack_require__(3);
-
-var _config2 = _interopRequireDefault(_config);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var jQuery = _jquery2.default; // TODO: remove after we're no longer using example code
-
-var ImageProcessor = function () {
-    function ImageProcessor() {
-        _classCallCheck(this, ImageProcessor);
-
-        this.processImage();
-    }
-
-    _createClass(ImageProcessor, [{
-        key: 'processImage',
-        value: function processImage() {
-            // **********************************************
-            // *** Update or verify the following values. ***
-            // **********************************************
-
-            // Replace the subscriptionKey string value with your valid subscription key.
-            var subscriptionKey = _config2.default.azure.key;
-            console.log("API Key is " + subscriptionKey);
-
-            // Replace or verify the region.
-            //
-            // You must use the same region in your REST API call as you used to obtain your subscription keys.
-            // For example, if you obtained your subscription keys from the westus region, replace
-            // "westcentralus" in the URI below with "westus".
-            //
-            // NOTE: Free trial subscription keys are generated in the westcentralus region, so if you are using
-            // a free trial subscription key, you should not need to change this region.
-            var uriBase = "https://westus.api.cognitive.microsoft.com/face/v1.0/detect";
-
-            // Request parameters.
-            var params = {
-                "returnFaceId": "true",
-                "returnFaceLandmarks": "false",
-                "returnFaceAttributes": "age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise"
-            };
-
-            // Display the image.
-            var sourceImageUrl = document.getElementById("inputImage").value;
-            document.querySelector("#sourceImage").src = sourceImageUrl;
-
-            // Perform the REST API call.
-            _jquery2.default.ajax({
-                url: uriBase + "?" + _jquery2.default.param(params),
-
-                // Request headers.
-                beforeSend: function beforeSend(xhrObj) {
-                    xhrObj.setRequestHeader("Content-Type", "application/json");
-                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
-                },
-
-                type: "POST",
-
-                // Request body.
-                data: '{"url": ' + '"' + sourceImageUrl + '"}'
-            }).done(function (data) {
-                // Show formatted JSON on webpage.
-                (0, _jquery2.default)("#responseTextArea").val(JSON.stringify(data, null, 2));
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                // Display error message.
-                var errorString = errorThrown === "" ? "Error. " : errorThrown + " (" + jqXHR.status + "): ";
-                errorString += jqXHR.responseText === "" ? "" : jQuery.parseJSON(jqXHR.responseText).message ? jQuery.parseJSON(jqXHR.responseText).message : jQuery.parseJSON(jqXHR.responseText).error.message;
-                alert(errorString);
-            });
-        }
-    }]);
-
-    return ImageProcessor;
-}();
-
-exports.default = ImageProcessor;
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10434,6 +10322,183 @@ if ( !noGlobal ) {
 return jQuery;
 } );
 
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _ImageProcessor = __webpack_require__(2);
+
+var _ImageProcessor2 = _interopRequireDefault(_ImageProcessor);
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var iP = new _ImageProcessor2.default();
+(0, _jquery2.default)('#urlbutton').on('click', function () {
+    iP.processImage();
+});
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _config = __webpack_require__(3);
+
+var _config2 = _interopRequireDefault(_config);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var jQuery = _jquery2.default; // TODO: remove after we're no longer using example code
+
+var ImageProcessor = function () {
+    function ImageProcessor() {
+        _classCallCheck(this, ImageProcessor);
+
+        this.processImage();
+    }
+
+    _createClass(ImageProcessor, [{
+        key: 'processImage',
+        value: function processImage() {
+            // **********************************************
+            // *** Update or verify the following values. ***
+            // **********************************************
+
+            // Replace the subscriptionKey string value with your valid subscription key.
+            var subscriptionKey = _config2.default.azure.key;
+            console.log("API Key is " + subscriptionKey);
+
+            // Replace or verify the region.
+            //
+            // You must use the same region in your REST API call as you used to obtain your subscription keys.
+            // For example, if you obtained your subscription keys from the westus region, replace
+            // "westcentralus" in the URI below with "westus".
+            //
+            // NOTE: Free trial subscription keys are generated in the westcentralus region, so if you are using
+            // a free trial subscription key, you should not need to change this region.
+            var uriBase = "https://westus.api.cognitive.microsoft.com/face/v1.0/detect";
+
+            // Request parameters.
+            var params = {
+                "returnFaceId": "true",
+                "returnFaceLandmarks": "false",
+                "returnFaceAttributes": "age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise"
+            };
+
+            // Display the image.
+            var sourceImageUrl = document.getElementById("inputImage").value;
+            document.querySelector("#sourceImage").src = sourceImageUrl;
+            console.log(sourceImageUrl);
+
+            // Perform the REST API call.
+            _jquery2.default.ajax({
+                url: uriBase + "?" + _jquery2.default.param(params),
+
+                // Request headers.
+                beforeSend: function beforeSend(xhrObj) {
+                    xhrObj.setRequestHeader("Content-Type", "application/json");
+                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
+                },
+
+                type: "POST",
+
+                // Request body.
+                data: '{"url": ' + '"' + sourceImageUrl + '"}'
+
+            }).done(function (data) {
+                // Show formatted JSON on webpage.
+                (0, _jquery2.default)("#responseTextArea").val(JSON.stringify(data, null, 2));
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                // Display error message.
+                var errorString = errorThrown === "" ? "Error. " : errorThrown + " (" + jqXHR.status + "): ";
+                errorString += jqXHR.responseText === "" ? "" : jQuery.parseJSON(jqXHR.responseText).message ? jQuery.parseJSON(jqXHR.responseText).message : jQuery.parseJSON(jqXHR.responseText).error.message;
+                alert(errorString);
+            });
+        }
+    }, {
+        key: 'postFace',
+        value: function postFace() {
+            // **********************************************
+            // *** Update or verify the following values. ***
+            // **********************************************
+
+            // Replace the subscriptionKey string value with your valid subscription key.
+            var subscriptionKey = _config2.default.azure.key;
+            console.log("API Key is " + subscriptionKey);
+
+            // Replace or verify the region.
+            //
+            // You must use the same region in your REST API call as you used to obtain your subscription keys.
+            // For example, if you obtained your subscription keys from the westus region, replace
+            // "westcentralus" in the URI below with "westus".
+            //
+            // NOTE: Free trial subscription keys are generated in the westcentralus region, so if you are using
+            // a free trial subscription key, you should not need to change this region.
+            var uriBase = "https://westus.api.cognitive.microsoft.com/face/v1.0/detect";
+
+            // Request parameters.
+            var params = {
+                "returnFaceId": "true",
+                "returnFaceLandmarks": "false",
+                "returnFaceAttributes": "age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise"
+            };
+
+            // Display the image.
+            var sourceImageUrl = document.getElementById("inputImage").value;
+            document.querySelector("#sourceImage").src = sourceImageUrl;
+
+            // Perform the REST API call.
+            _jquery2.default.ajax({
+                url: uriBase + "?" + _jquery2.default.param(params),
+
+                // Request headers.
+                beforeSend: function beforeSend(xhrObj) {
+                    xhrObj.setRequestHeader("Content-Type", "application/json");
+                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
+                },
+
+                type: "POST",
+
+                // Request body.
+                data: '{"url": ' + '"' + sourceImageUrl + '"}'
+            }).done(function (data) {
+                // Show formatted JSON on webpage.
+                (0, _jquery2.default)("#responseTextArea").val(JSON.stringify(data, null, 2));
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                // Display error message.
+                var errorString = errorThrown === "" ? "Error. " : errorThrown + " (" + jqXHR.status + "): ";
+                errorString += jqXHR.responseText === "" ? "" : jQuery.parseJSON(jqXHR.responseText).message ? jQuery.parseJSON(jqXHR.responseText).message : jQuery.parseJSON(jqXHR.responseText).error.message;
+                alert(errorString);
+            });
+        }
+    }]);
+
+    return ImageProcessor;
+}();
+
+exports.default = ImageProcessor;
 
 /***/ }),
 /* 3 */
