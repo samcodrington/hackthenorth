@@ -89,20 +89,37 @@ class DatabaseManager {
         query.api_key = config.azure.key;
         query.name = groupName;
         var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ groupId + "/persons"
+
+        $.get(url,query,this.onAzurePersonGroupResponse)
     }
 
-    createAzurePerson(name) {
+    onAzurePersonGroupResponse(response){
+        //TODO: 
+    }
+
+    createAzurePerson(name, urls) {
         var query = {};
         query.api_key = config.azure.key;
         query.name = name;
         var person_group_id = null;//TODO:
         var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ person_group_id + "/persons"
 
-        $.get(url,query,this.onAzurePersonResponse)
+        $.get(url,query, function(response) {
+            this.onAzurePersonResponse(response, urls);
+        });
+        
     }
-    onAzurePersonResponse(response){
+    onAzurePersonResponse(response, urls){
         var azureID = response.personID;
-        $('#AzureID').text(azureID);
+        addFaces(azureID, urls)
+    }
+    addFaces(personID, urls){
+        for (let url of urls){
+            var query = {};
+            query.api_key = config.azure.key;
+            query.url = url;
+
+        }
     }
 
 }
