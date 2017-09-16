@@ -10387,9 +10387,17 @@ var ImageProcessor = function () {
         _classCallCheck(this, ImageProcessor);
 
         this.processImage();
+        this.events();
     }
 
     _createClass(ImageProcessor, [{
+        key: 'events',
+        value: function events() {
+            (0, _jquery2.default)('#urlSubmit').on('click', function () {
+                //TODO:
+            });
+        }
+    }, {
         key: 'processImage',
         value: function processImage() {
             // **********************************************
@@ -10687,13 +10695,18 @@ var DropZone = function () {
                     // Ajax for modern browsers
                     event.preventDefault();
 
+                    console.log('this.$form', _this3.$form.get(0));
                     var ajaxData = new FormData(_this3.$form.get(0));
 
                     if (_this3.droppedFiles) {
+                        console.log('this.droppedFiles', _this3.droppedFiles);
                         _jquery2.default.each(_this3.droppedFiles, function (i, file) {
+                            console.log(i + 'attr(name)', this.$input.attr('name'));
                             ajaxData.append(this.$input.attr('name'), file);
                         }.bind(_this3));
                     }
+
+                    console.log('ajaxData', ajaxData);
 
                     _jquery2.default.ajax({
                         url: _this3.$form.attr('action'),
