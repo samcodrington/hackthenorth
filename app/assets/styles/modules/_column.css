@@ -1,0 +1,15 @@
+.column {
+    /* background-color: rgba($mediumBlue, 0.5); */
+    width: 50%;
+    margin: 0;
+    display: inline-block;
+    padding-right: 0.25rem;
+    float: left;
+    
+    &--right {
+        float: right;
+        padding: 0;
+        padding-left: 0.25rem;
+    }
+    margin-bottom: 3rem;
+}

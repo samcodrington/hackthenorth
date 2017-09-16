@@ -1,4 +1,16 @@
 .title {
     text-align: center;
-    font-size: 3rem;
+    font-size: 2rem;
+
+    @mixin atSmall {
+        font-size: 2.25rem;
+    }
+
+    @mixin atMedium {
+        font-size: 3rem;
+    }
+
+    @mixin atLarge {
+        font-size: 4rem;
+    }
 }

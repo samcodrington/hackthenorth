@@ -1,0 +1,9 @@
+.card {
+    background-color: $mediumBlue;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    & h2 {
+        color: $whiteBlue
+    }
+}
