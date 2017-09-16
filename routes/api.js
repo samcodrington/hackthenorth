@@ -11,13 +11,13 @@ var ActorModel = require('../public/scripts/modules/models/ActorModel');
     Queries should be of the form:
     {
         PersonID: String            // The ID of the actor to locate
-        ImdbID: boolean(true)       // Whether or not to return these 
+        TmdbID: boolean(true)       // Whether or not to return these 
         AppearedIn: boolean(true)   //  two fields, default true
     }
 */
 router.get('/actor', function(req, res, next) {
     var PersonID = req.query['PersonID'],
-    ImdbID = req.query['ImdbID'] ? req.query['ImdbID'] : true,
+    TmdbID = req.query['TmdbID'] ? req.query['TmdbID'] : true,
     AppearedIn = req.query['AppearedIn'] ? req.query['AppearedIn'] : true;
 
     ActorModel.find({ 'PersonID': PersonID }, function(err, docs) {
@@ -29,7 +29,7 @@ router.get('/actor', function(req, res, next) {
 
 router.post('/actor', function(req, res, next) {
     console.log('PersonID' + body.PersonID);
-    console.log('ImdbID' + body.ImdbID);
+    console.log('TmdbID' + body.TmdbID);
     console.log('AppearedIn.length()' + body.AppearedIn.length());
 });
 

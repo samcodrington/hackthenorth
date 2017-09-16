@@ -10413,7 +10413,7 @@ var ImageProcessor = function () {
             };
             if (url) {
                 // Display the image.
-                document.querySelector("#sourceImage").src = url;
+                document.querySelector(".img-container").src = url;
             }
 
             // Perform the REST API call.
