@@ -9,12 +9,18 @@
     <body>
         <div class='wrapper'>
             <h1 class='page-header'>Not Jon Snow?</h1>
+
             <div class='drop-zone__container'>
-                <div class='drop-zone'>
-                    <div class='centered-vertically text-align-center'>
-                        <span class='drop-zone__question-mark'>?</span>
+                <form class='drop-zone' method="POST" action="" enctype="multipart/form-data">
+                    <div class="drop-zone__input centered-vertically text-align-center">
+                        <label for="file">
+                            <strong>Choose a file</strong>
+                            <span class="drop-zone--dragndrop"> or drag it here</span>.
+                        </label>
+                        <br>
+                        <button class="drop-zone__button" type="submit">Upload</button>
                     </div>
-                </div>
+                </form>
             </div>
             <img src='app/assets/img/kit.jpg'></img>
         </div>
