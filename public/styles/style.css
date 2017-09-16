@@ -118,3 +118,24 @@ a {
 .margin--top {
         margin-top: 2rem;
     }
+.btn {
+    display: inline-block;
+    height: 4rem;
+    padding: 0 1rem;
+    background: #AFC4E0;
+    font-family: 'Raleway', sans-serif;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #343F3E;
+    border: none;
+    cursor: pointer;
+}
+.btn:hover {
+        background-color: #B3CEF2;
+    }
+.textbox {
+    display: inline-block;
+    height: 4rem;
+    font-family: 'Raleway', sans-serif;
+    font-size: 2rem;
+}

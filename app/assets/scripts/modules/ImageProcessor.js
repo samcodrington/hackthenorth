@@ -5,14 +5,14 @@ import config from '../../../../public/data/config.js';
 class ImageProcessor {
 
     constructor() {
-        this.processImage();
         this.events();
     }
 
     events() {
-        $('#urlSubmit').on('click', () => {
-            //TODO:
-        });
+        $('#urlSubmit').on('click', function() {
+            var url = $('#urlBox').val();
+            this.verifyJonSnow(url);
+        }.bind(this));
     }
 
     processImage() {
@@ -22,7 +22,6 @@ class ImageProcessor {
     
         // Replace the subscriptionKey string value with your valid subscription key.
         var subscriptionKey = (config.azure.key);
-        console.log("API Key is " + subscriptionKey);
     
         // Replace or verify the region.
         //
@@ -78,14 +77,13 @@ class ImageProcessor {
         });
     };
 
-    verifyJonSnow(isURL){
+    verifyJonSnow(url){
         // **********************************************
         // *** Update or verify the following values. ***
         // **********************************************
     
         // Replace the subscriptionKey string value with your valid subscription key.
         var subscriptionKey = (config.azure.key);
-        console.log("API Key is " + subscriptionKey);
     
         // Replace or verify the region.
         //
@@ -104,13 +102,12 @@ class ImageProcessor {
             "returnFaceLandmarks": "false",
             "returnFaceAttributes": "",
         };
-        if (isURL == true){
+        if (url){
             // Display the image.
-            var sourceImageUrl = document.getElementById("inputImage").value;
-            document.querySelector("#sourceImage").src = sourceImageUrl;
+            document.querySelector("#sourceImage").src = url;
         }
-        else{
-            //Collect the file
+        else {
+            // Collect the file
             //TODO: Finish this
             contentType = "application/octet-stream";
         }
@@ -129,14 +126,14 @@ class ImageProcessor {
             type: "POST",
     
             // Request body.
-            data: '{"url": ' + '"' + sourceImageUrl + '"}',
+            data: '{"url": ' + '"' + url + '"}',
         })
     
         .done(function(data) {
             // Show formatted JSON on webpage.
-            verifyJonSnowHelper(data.faceid)
-            
-        })
+            this.getActorFromFaceID(data[0].faceId);
+            // TODO: Check each face in the result?
+        }.bind(this))
     
         .fail(function(jqXHR, textStatus, errorThrown) {
             // Display error message.
@@ -146,13 +143,18 @@ class ImageProcessor {
             alert(errorString);
         });
     };
-    verifyJonSnowHelper(faceidToBeVerified){
-        console.log(faceid)
+
+    getActorFromFaceID(faceID){
         var subscriptionKey = (config.azure.key);
-        var uriBase = "https://westus.api.cognitive.microsoft.com/face/v1.0/verify";
+        var uriBase = "https://westus.api.cognitive.microsoft.com/face/v1.0/identify";
         var contentType = "application/json";
+        var requestBody = JSON.stringify({
+            faceIds: [faceID],
+            personGroupId: 'jon-snow'
+        });
+
         $.ajax({
-            url: uriBase + "?" + $.param(params),
+            url: uriBase,
     
             // Request headers.
             beforeSend: function(xhrObj){
@@ -163,17 +165,21 @@ class ImageProcessor {
             type: "POST",
     
             // Request body.
-            faceId: faceidToBeVerified,
-            personId:"9074cc0b-07cf-43ed-a0a3-96ff277b99e3",
-            personGroupId:"jon-snow"
+            data: requestBody
         })
     
         .done(function(data) {
             // Show formatted JSON on webpage.
-            console.log(data);
+            console.log('data', data);
+            
+            var confidence = 0;
+            if (data[0].candidates.length > 0) {
+                confidence = data[0].candidates[0].confidence;
+            }
+            this.updatePercentage(confidence);
             $("#responseTextArea").val(JSON.stringify(data, null, 2));
             
-        })
+        }.bind(this))
     
         .fail(function(jqXHR, textStatus, errorThrown) {
             // Display error message.
@@ -182,6 +188,10 @@ class ImageProcessor {
                 jQuery.parseJSON(jqXHR.responseText).message : jQuery.parseJSON(jqXHR.responseText).error.message;
             alert(errorString);
         });
+    }
+
+    updatePercentage(updatePercentage) {
+        $('#percentage').text(updatePercentage);
     }
 
 }

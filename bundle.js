@@ -10386,7 +10386,6 @@ var ImageProcessor = function () {
     function ImageProcessor() {
         _classCallCheck(this, ImageProcessor);
 
-        this.processImage();
         this.events();
     }
 
@@ -10394,8 +10393,9 @@ var ImageProcessor = function () {
         key: 'events',
         value: function events() {
             (0, _jquery2.default)('#urlSubmit').on('click', function () {
-                //TODO:
-            });
+                var url = (0, _jquery2.default)('#urlBox').val();
+                this.verifyJonSnow(url);
+            }.bind(this));
         }
     }, {
         key: 'processImage',
@@ -10406,7 +10406,6 @@ var ImageProcessor = function () {
 
             // Replace the subscriptionKey string value with your valid subscription key.
             var subscriptionKey = _config2.default.azure.key;
-            console.log("API Key is " + subscriptionKey);
 
             // Replace or verify the region.
             //
@@ -10457,14 +10456,13 @@ var ImageProcessor = function () {
         }
     }, {
         key: 'verifyJonSnow',
-        value: function verifyJonSnow(isURL) {
+        value: function verifyJonSnow(url) {
             // **********************************************
             // *** Update or verify the following values. ***
             // **********************************************
 
             // Replace the subscriptionKey string value with your valid subscription key.
             var subscriptionKey = _config2.default.azure.key;
-            console.log("API Key is " + subscriptionKey);
 
             // Replace or verify the region.
             //
@@ -10483,12 +10481,11 @@ var ImageProcessor = function () {
                 "returnFaceLandmarks": "false",
                 "returnFaceAttributes": ""
             };
-            if (isURL == true) {
+            if (url) {
                 // Display the image.
-                var sourceImageUrl = document.getElementById("inputImage").value;
-                document.querySelector("#sourceImage").src = sourceImageUrl;
+                document.querySelector("#sourceImage").src = url;
             } else {
-                //Collect the file
+                // Collect the file
                 //TODO: Finish this
                 contentType = "application/octet-stream";
             }
@@ -10506,11 +10503,12 @@ var ImageProcessor = function () {
                 type: "POST",
 
                 // Request body.
-                data: '{"url": ' + '"' + sourceImageUrl + '"}'
+                data: '{"url": ' + '"' + url + '"}'
             }).done(function (data) {
                 // Show formatted JSON on webpage.
-                verifyJonSnowHelper(data.faceid);
-            }).fail(function (jqXHR, textStatus, errorThrown) {
+                this.getActorFromFaceID(data[0].faceId);
+                // TODO: Check each face in the result?
+            }.bind(this)).fail(function (jqXHR, textStatus, errorThrown) {
                 // Display error message.
                 var errorString = errorThrown === "" ? "Error. " : errorThrown + " (" + jqXHR.status + "): ";
                 errorString += jqXHR.responseText === "" ? "" : jQuery.parseJSON(jqXHR.responseText).message ? jQuery.parseJSON(jqXHR.responseText).message : jQuery.parseJSON(jqXHR.responseText).error.message;
@@ -10518,14 +10516,18 @@ var ImageProcessor = function () {
             });
         }
     }, {
-        key: 'verifyJonSnowHelper',
-        value: function verifyJonSnowHelper(faceidToBeVerified) {
-            console.log(faceid);
+        key: 'getActorFromFaceID',
+        value: function getActorFromFaceID(faceID) {
             var subscriptionKey = _config2.default.azure.key;
-            var uriBase = "https://westus.api.cognitive.microsoft.com/face/v1.0/verify";
+            var uriBase = "https://westus.api.cognitive.microsoft.com/face/v1.0/identify";
             var contentType = "application/json";
+            var requestBody = JSON.stringify({
+                faceIds: [faceID],
+                personGroupId: 'jon-snow'
+            });
+
             _jquery2.default.ajax({
-                url: uriBase + "?" + _jquery2.default.param(params),
+                url: uriBase,
 
                 // Request headers.
                 beforeSend: function beforeSend(xhrObj) {
@@ -10536,19 +10538,28 @@ var ImageProcessor = function () {
                 type: "POST",
 
                 // Request body.
-                faceId: faceidToBeVerified,
-                personId: "9074cc0b-07cf-43ed-a0a3-96ff277b99e3",
-                personGroupId: "jon-snow"
+                data: requestBody
             }).done(function (data) {
                 // Show formatted JSON on webpage.
-                console.log(data);
+                console.log('data', data);
+
+                var confidence = 0;
+                if (data[0].candidates.length > 0) {
+                    confidence = data[0].candidates[0].confidence;
+                }
+                this.updatePercentage(confidence);
                 (0, _jquery2.default)("#responseTextArea").val(JSON.stringify(data, null, 2));
-            }).fail(function (jqXHR, textStatus, errorThrown) {
+            }.bind(this)).fail(function (jqXHR, textStatus, errorThrown) {
                 // Display error message.
                 var errorString = errorThrown === "" ? "Error. " : errorThrown + " (" + jqXHR.status + "): ";
                 errorString += jqXHR.responseText === "" ? "" : jQuery.parseJSON(jqXHR.responseText).message ? jQuery.parseJSON(jqXHR.responseText).message : jQuery.parseJSON(jqXHR.responseText).error.message;
                 alert(errorString);
             });
+        }
+    }, {
+        key: 'updatePercentage',
+        value: function updatePercentage(_updatePercentage) {
+            (0, _jquery2.default)('#percentage').text(_updatePercentage);
         }
     }]);
 
