@@ -57,13 +57,18 @@ class DropZone {
                 // Ajax for modern browsers
                 event.preventDefault();
 
+                console.log('this.$form', this.$form.get(0));
                 var ajaxData = new FormData(this.$form.get(0));
 
                 if (this.droppedFiles) {
+                    console.log('this.droppedFiles', this.droppedFiles);
                     $.each(this.droppedFiles, function(i, file) {
+                        console.log(i + 'attr(name)', this.$input.attr('name'));
                         ajaxData.append(this.$input.attr('name'), file);
                     }.bind(this));
                 }
+
+                console.log('ajaxData', ajaxData);
 
                 $.ajax({
                     url: this.$form.attr('action'),
