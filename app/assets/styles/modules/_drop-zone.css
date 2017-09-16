@@ -19,3 +19,10 @@
         height: 0;
     }
 }
+
+.drop-zone .drop-zone__dragndrop,
+.drop-zone .drop-zone__uploading,
+.drop-zone .drop-zone__success,
+.drop-zone .drop-zone__error {
+    display: none;
+}

@@ -40,6 +40,12 @@ a {
         padding-bottom: 100%;
         height: 0;
     }
+.drop-zone .drop-zone__dragndrop,
+.drop-zone .drop-zone__uploading,
+.drop-zone .drop-zone__success,
+.drop-zone .drop-zone__error {
+    display: none;
+}
 .centered-vertically {
     display: block;
     position: relative;
