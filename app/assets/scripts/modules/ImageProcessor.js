@@ -6,8 +6,14 @@ class ImageProcessor {
 
     constructor() {
         this.processImage();
+        this.events();
     }
 
+    events() {
+        $('#urlSubmit').on('click', () => {
+            //TODO:
+        });
+    }
 
     processImage() {
         // **********************************************
