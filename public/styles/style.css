@@ -2,7 +2,7 @@
 Light Blues:
 https://coolors.co/dcedff-c5e0f7-b3cef2-afc4e0-343f3e
 Others:
-https://coolors.co/dcedff-4a8edb-246ec1-505a5b-343f3e
+https://coolors.co/dcedff-4a8edb-246ec1-a8533f-343f3e
 */
 body {
     margin: 0;
@@ -138,4 +138,10 @@ a {
     height: 4rem;
     font-family: 'Raleway', sans-serif;
     font-size: 2rem;
+}
+.error {
+    /* TODO: pick a better red */
+    color: #DCEDFF; 
+    background-color: #A8533F;
+    padding: 1rem;
 }
