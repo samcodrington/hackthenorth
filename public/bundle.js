@@ -10366,13 +10366,11 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import DropZone from './modules/DropZone';
 var iP = new _ImageProcessor2.default();
 (0, _jquery2.default)('#urlbutton').on('click', function () {
     iP.processImage();
 });
 var fD = new _FeatureDetector2.default();
-// var dZ = new DropZone(fD, iP);
 var dM = new _DatabaseManager2.default();
 
 /***/ }),
