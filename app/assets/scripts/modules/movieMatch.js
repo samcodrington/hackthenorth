@@ -81,11 +81,13 @@ class movieMatch{
             var listToCheck = combinedList[i][type];
             for (var j = 0; j < listToCheck.length; j ++){
                 var idToCheck = listToCheck[j].id;
-                for (var k = i + 1; k < numActors; k ++){
-                    var secondList = combinedList[k][type];
-                
-                    if ( this.checkIDAgainstList(idToCheck, secondList))
-                        hitList = this.addElemToHitList(listToCheck[j],type, hitList);
+                if (checkHitList(idToCheck,hitList,type)){
+                    for (var k = i + 1; k < numActors; k ++){
+                        var secondList = combinedList[k][type];
+                    
+                        if ( this.checkIDAgainstList(idToCheck, secondList))
+                            hitList = this.addElemToHitList(listToCheck[j],type, hitList);
+                    }
                 }
             } 
         }
@@ -94,6 +96,13 @@ class movieMatch{
         }
         this.displayMovieMatches(hitList);
 
+    }
+    checkHitList(id,hitList,type){
+        for (let elem of hitList){
+            if (elem.type === type && elem.id === id)
+                return false; //returns false if element is already in hitlist
+        }
+        return true; //returns true otherwise
     }
     checkIDAgainstList(id,list){
         for (let elem of list){
