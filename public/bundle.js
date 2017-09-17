@@ -10405,6 +10405,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var tmdbIds = [];
 var allCandidates = [];
 var numFaces = 0;
+var BASE_URI = 'https://www.themoviedb.org/person/';
 
 var ImageProcessor = function () {
     function ImageProcessor() {
@@ -10576,7 +10577,7 @@ var ImageProcessor = function () {
                 var _loop = function _loop() {
                     var candidate = _step3.value;
 
-                    var $nameSpan = (0, _jquery2.default)('<span>').text('Loading...');
+                    var $nameSpan = (0, _jquery2.default)('<span>', { 'class': 'nameSpan' }).text('Loading...');
                     var $html = (0, _jquery2.default)('<div>', { 'class': 'card' }).append((0, _jquery2.default)('<h2>').text('Name: ').append($nameSpan), (0, _jquery2.default)('<h2>').text('Facial Match: ').append((0, _jquery2.default)('<span>', { 'class': 'title' }).text(_this.toPercentage(candidate.confidence)), (0, _jquery2.default)('<span>').text('%')));
 
                     // Asynchronously  load name from personId
@@ -10589,6 +10590,9 @@ var ImageProcessor = function () {
                         } else {
                             var resultJSON = JSON.parse(result);
                             $nameSpan.text(resultJSON.name);
+                            $nameSpan.on('click', function () {
+                                window.location.href = BASE_URI + resultJSON.tmdbId;
+                            });
                         }
                     }).fail(function () {
                         //TODO: error handling
@@ -10703,6 +10707,7 @@ var numActors = 0;
 var numListsRetrieved = 0;
 
 var MAX_MATCHES = 5; // The most number of common titles to be displayed
+var BASE_URI = 'https://www.themoviedb.org/movie/';
 
 var movieMatch = function () {
     function movieMatch(actorTMDBids) {
@@ -10932,11 +10937,20 @@ var movieMatch = function () {
             var _iteratorError4 = undefined;
 
             try {
-                for (var _iterator4 = topTitles[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                var _loop = function _loop() {
                     var title = _step4.value;
 
-                    var $html = (0, _jquery2.default)('<div>', { 'class': 'card' }).append((0, _jquery2.default)('<h2>').text('Title: ').append((0, _jquery2.default)('<span>').text(title.name)), (0, _jquery2.default)('<h2>').text('Features ').append((0, _jquery2.default)('<span>', { 'class': 'title' }).text(title.count), (0, _jquery2.default)('<span>').text(' of the actors.')));
+                    var $titleSpan = (0, _jquery2.default)('<span>', { 'class': 'nameSpan' }).text(title.name);
+                    var $html = (0, _jquery2.default)('<div>', { 'class': 'card' }).append((0, _jquery2.default)('<h2>').text('Title: ').append($titleSpan), (0, _jquery2.default)('<h2>').text('Features ').append((0, _jquery2.default)('<span>', { 'class': 'title' }).text(title.count), (0, _jquery2.default)('<span>').text(' of the actors.')));
+
+                    $titleSpan.on('click', function () {
+                        window.location.href = BASE_URI + title.id;
+                    });
                     (0, _jquery2.default)('.column--titles').append($html);
+                };
+
+                for (var _iterator4 = topTitles[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    _loop();
                 }
             } catch (err) {
                 _didIteratorError4 = true;

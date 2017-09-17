@@ -7,6 +7,7 @@ let numActors = 0;
 let numListsRetrieved = 0;
 
 const MAX_MATCHES = 5; // The most number of common titles to be displayed
+const BASE_URI = 'https://www.themoviedb.org/movie/';
 
 class movieMatch{
     
@@ -151,15 +152,20 @@ class movieMatch{
 
     generateCards(topTitles) {
         for (let title of topTitles) {
+            let $titleSpan = $('<span>', {'class': 'nameSpan'}).text(title.name);
             let $html = $('<div>', {'class': 'card'}).append(
                 $('<h2>').text('Title: ').append(
-                    $('<span>').text(title.name)
+                    $titleSpan
                 ),
                 $('<h2>').text('Features ').append(
                     $('<span>', {'class': 'title'}).text(title.count),
                     $('<span>').text(' of the actors.')
                 )
             );
+
+            $titleSpan.on('click', () => {
+                window.location.href = BASE_URI + title.id;
+            });
             $('.column--titles').append($html);
         }
     }

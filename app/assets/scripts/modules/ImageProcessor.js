@@ -5,6 +5,8 @@ import movieMatch from './movieMatch';
 let tmdbIds = [];
 let allCandidates = [];
 let numFaces = 0;
+const BASE_URI = 'https://www.themoviedb.org/person/';
+
 class ImageProcessor {
 
     constructor() {
@@ -128,7 +130,7 @@ class ImageProcessor {
 
     generateCards(candidates) {
         for (let candidate of candidates) {
-            let $nameSpan = $('<span>').text('Loading...');
+            let $nameSpan = $('<span>', {'class': 'nameSpan'}).text('Loading...');
             let $html = $('<div>', {'class': 'card'}).append(
                 $('<h2>').text('Name: ').append(
                     $nameSpan
@@ -148,6 +150,9 @@ class ImageProcessor {
                 } else {
                     var resultJSON = JSON.parse(result);
                     $nameSpan.text(resultJSON.name);
+                    $nameSpan.on('click', () => {
+                        window.location.href = BASE_URI + resultJSON.tmdbId;
+                    });
                 }
             }).
             fail(function() {
