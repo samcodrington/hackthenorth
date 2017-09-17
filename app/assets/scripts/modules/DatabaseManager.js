@@ -17,16 +17,24 @@ class DatabaseManager {
     }
 
     events() {
-        $('#nameButton').on('click', () => {
-            var name = $('#nameInput').val();
-            var query = {};
-            query.api_key = api_key;
-            query.query = name;
+        $('#nameButton').on('click', this.onNameButtonClick.bind(this));
 
-            var url = uri_root + 'search/person';
+        $('#nameInput').on('keypress', function(event) {
+            if (event.keyCode == 13) {
+                this.onNameButtonClick();
+            }
+        }.bind(this));
+    }
 
-            $.get(url, query, this.onNameQueryResponse.bind(this, name));
-        });
+    onNameButtonClick() {
+        var name = $('#nameInput').val();
+        var query = {};
+        query.api_key = api_key;
+        query.query = name;
+
+        var url = uri_root + 'search/person';
+
+        $.get(url, query, this.onNameQueryResponse.bind(this, name));
     }
 
     cacheTmdbConfig() {
@@ -51,7 +59,6 @@ class DatabaseManager {
         data.tmdbId = tmdbId;
         data.personId = personId;
         $.post('/api/actor', data, () => {
-            console.log('Success! Actor ' + name + ' inserted.');
         })
     }
     onNameQueryResponse(name, response) {
@@ -135,13 +142,10 @@ class DatabaseManager {
 
     // Called in a loop from addFaces
     addFacesResponse(personID, imageUrl, response){
-        console.log(response[0]);
         var responseFace = "&targetFace="+response[0].faceRectangle.left +","+ response[0].faceRectangle.top + "," 
                 + response[0].faceRectangle.width +","+response[0].faceRectangle.height;
         // Add face to person
-        var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ person_group_id +"/persons/" + personID + "/persistedFaces";// + responseFace;
-        console.log(url)
-        console.log(imageUrl);
+        var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ person_group_id +"/persons/" + personID + "/persistedFaces";
         this.postRequest(url, {'url': imageUrl});
         // $.ajax({
         //     url: url,
