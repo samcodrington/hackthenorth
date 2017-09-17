@@ -1,9 +1,14 @@
 .card {
-    background-color: $mediumBlue;
+    background-color: $whiteBlue;
     padding: 0.5rem;
     margin-bottom: 0.5rem;
+    font-size: 3rem;
 
     & h2 {
-        color: $whiteBlue
+        color: $darkGrey;
+    }
+
+    @mixin atLarge {
+        font-size: 1.5rem;
     }
 }
