@@ -10693,11 +10693,15 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
+var _config = __webpack_require__(1);
+
+var _config2 = _interopRequireDefault(_config);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var api_key = '190078ca8ad2919e5e468521e5d5114a';
+var api_key = _config2.default.azure.key;
 var uri_root = 'https://api.themoviedb.org/3/';
 var combinedList = [];
 var numActors = 0;
@@ -10896,7 +10900,7 @@ var movieMatch = function () {
         key: 'sortHitList',
         value: function sortHitList(hitList) {
             hitList.sort(function (a, b) {
-                return a.count - b.count;
+                return b.count - a.count;
             });
         }
     }, {
@@ -11027,7 +11031,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var person_group_id = 'group1';
 
-var api_key = '190078ca8ad2919e5e468521e5d5114a';
+var api_key = _config2.default.azure.key;
 var uri_root = 'https://api.themoviedb.org/3/';
 var max_image_set_size = 5;
 
