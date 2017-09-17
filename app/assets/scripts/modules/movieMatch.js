@@ -2,7 +2,7 @@ import $ from 'jquery';
 import config from '../../../../public/data/config.js';
 
 
-let api_key = config.azure.key;
+let api_key = config.tmdb.key;
 let uri_root = 'https://api.themoviedb.org/3/';
 let combinedList = [];
 let numActors = 0;
