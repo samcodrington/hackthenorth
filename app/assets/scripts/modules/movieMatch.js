@@ -13,10 +13,11 @@ class movieMatch{
     }
     checkMatches(actorTMDBids){
         var movieIDs = [];
-        var tvIDs = 
+        var tvIDs = [];
         for (i = 0; i < actorTMDBids.length; i++){
             var actorId = actorTMDBids[i];
             movieIDs[i] = retrieveMovies(actorId);
+            tvIDs[i] = retrievetvIDs(actorId);
         }
         
         return movieIDs;
