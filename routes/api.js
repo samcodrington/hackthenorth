@@ -10,21 +10,25 @@ var ActorModel = require('../public/scripts/modules/models/ActorModel');
 /*
     Queries should be of the form:
     {
-        PersonID: String            // The ID of the actor to locate
-        TmdbID: boolean(true)       // Whether or not to return these 
-        AppearedIn: boolean(true)   //  two fields, default true
+        personId: String        // The ID of the actor to locate
+        tmbId: boolean(true)   // Whether or not to return these 
+        name: boolean(true)     //  two fields, default true
     }
+    NOTE the capitalizations!
 */
 router.get('/actor', function(req, res, next) {
-    var PersonID = req.query['PersonID'],
-    TmdbID = req.query['TmdbID'] ? req.query['TmdbID'] : true,
-    AppearedIn = req.query['AppearedIn'] ? req.query['AppearedIn'] : true;
+    var personId = req.query['personId'],
+    tmbId = req.query['tmbId'] ? req.query['tmbId'] : true,
+    name = req.query['name'] ? req.query['name'] : true;
 
-    ActorModel.find({ 'PersonID': PersonID }, function(err, docs) {
-        console.log(docs[0]);
+    ActorModel.findOne({ 'personId': personId }, function(err, result) {
+        if (result) {
+            return res.end(JSON.stringify(result));
+        } else {
+            return res.sendStatus(404);
+        }
     });
     
-    return res.end(JSON.stringify(test));
 });
 
 router.post('/actor', function(req, res, next) {
