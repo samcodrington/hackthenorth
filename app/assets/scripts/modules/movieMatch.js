@@ -6,6 +6,8 @@ let combinedList = [];
 let numActors = 0;
 let numListsRetrieved = 0;
 
+const MAX_MATCHES = 10; // The most number of common titles to be displayed
+
 class movieMatch{
     
     constructor(actorTMDBids){
@@ -15,19 +17,18 @@ class movieMatch{
     }
     
     findMovies(actorTMDBids){
-        for (i = 0; i < numActors; i++){
+        for (var i = 0; i < numActors; i++){
             var actorId = actorTMDBids[i];
-            retrieveAll(actorId);
+            this.retrieveAll(actorId);
         }
-        var movieInfo = retrieveMovieMatches(movieIDs);
-        displayMovieMatches(movieInfo);
     }
 
     retrieveAll(actorId) {
+        
         var query = {};
         query.api_key = api_key;
-        var url = uri_root + "/person/" + actorId + "/combined_credits";
-        $.get(url,query,retrieveAllResponse);
+        var url = uri_root + "person/" + actorId + "/combined_credits";
+        $.get(url, query, this.retrieveAllResponse.bind(this));
         
     }
     
@@ -35,30 +36,38 @@ class movieMatch{
         var movieList = [];
         var tvList = [];
         for (let castItem of combinedList){
-            if (castItem.media_type == "tv")
-                tvList.push({"id":castItem.id,"name":castItem.title});
-            else if (castItem.media_type == "movie")
-                movieList.push({"id":castItem.id,"name":castItem.title});
+            if (castItem.media_type == "tv") {
+                tvList.push({
+                    "id": castItem.id,
+                    "name": castItem.name
+                });
+            } else if (castItem.media_type == "movie") {
+                movieList.push({
+                    "id": castItem.id,
+                    "name": castItem.title
+                });
+            }
+                
         }
         return {"movie":movieList,"tv":tvList};
     }
     
     retrieveAllResponse(response){
-        splitList = splitTVMovie(response.cast);
-        addNewCombinedList(splitList);
+        var splitList = this.splitTVMovie(response.cast);
+        this.addNewCombinedList(splitList);
     }
     
     addNewCombinedList(splitList){
         combinedList.push(splitList);
         numListsRetrieved++;
         if (numListsRetrieved == numActors)
-            checkMatches();    
+            this.checkMatches();    
     }
     
     checkMatches(){
-        sortCombinedList();
-        checkForMatchesInList(combinedList,'movie');
-        checkForMatchesInList(combinedList,'tv');
+        this.sortCombinedList();
+        this.checkForMatchesInList(combinedList,'movie');
+        this.checkForMatchesInList(combinedList,'tv');
     }
     sortCombinedList(){
         //TODO: Sort combined List elements as a stretch goal
@@ -69,16 +78,18 @@ class movieMatch{
             var listToCheck = combinedList[i][type];
             for (var j = 0; j < listToCheck.length; j ++){
                 var idToCheck = listToCheck[j].id;
-                
                 for (var k = i + 1; k < numActors; k ++){
-                    if (   checkIDAgainstList(idToCheck, combinedList[k][type])  )
-                        hitList = addIDToHitList(idToCheck,type, hitList);
+                    var secondList = combinedList[k][type];
+                
+                    if ( this.checkIDAgainstList(idToCheck, secondList))
+                        hitList = this.addElemToHitList(listToCheck[j],type, hitList);
                 }
             } 
         }
-        if (numActors>2)
-            sortHitList();
-        console.log(hitList);
+        if (numActors>2) {
+            this.sortHitList();
+        }
+        this.displayMovieMatches(hitList);
 
     }
     checkIDAgainstList(id,list){
@@ -89,9 +100,9 @@ class movieMatch{
         return false;
     }
 
-    addIDToHitList(idToCheck, type, hitList){
+    addElemToHitList(elemToCheck, type, hitList){
         for (let elem of hitList) {
-            if (elem.id === idToCheck && elem.type === type) {
+            if (elem.id === elemToCheck.id && elem.type === type) {
                 // Element already exists in hitlist
                 elem.count++; // increment its hit counter
                 return hitList;
@@ -99,9 +110,11 @@ class movieMatch{
         }
         // Add element to hitlist
         var hitObject = {};
-        hitObject.id = idToCheck;
+        hitObject.id = elemToCheck.id;
+        hitObject.name = elemToCheck.name;
         hitObject.type = type;
         hitObject.count = 2;
+        hitList.push(hitObject);
         return hitList;
     }
 
@@ -114,7 +127,7 @@ class movieMatch{
     removeDoubles(tmdbIds) {
         var seen = {};
         return tmdbIds.filter(function(item) {
-            return seen.hasOwnProperty(item) ? false : seen([item] = true);
+            return seen.hasOwnProperty(item) ? false : seen[item] = true;
         });
     }
     /*
@@ -128,9 +141,9 @@ class movieMatch{
     ]
     */
     displayMovieMatches(hitList) {
-        // Take at most top 3 hits
-        if (hitList.length > 3) {
-            hitList = hitList.slice(0, 3);
+        // Take at most top MAX_MATCHES hits
+        if (hitList.length > MAX_MATCHES) {
+            hitList = hitList.slice(0, MAX_MATCHES);
         }
 
         this.generateCards(hitList);
@@ -151,3 +164,5 @@ class movieMatch{
         }
     }
 }
+
+export default movieMatch;

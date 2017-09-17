@@ -10352,11 +10352,11 @@ var _ImageProcessor = __webpack_require__(3);
 
 var _ImageProcessor2 = _interopRequireDefault(_ImageProcessor);
 
-var _FeatureDetector = __webpack_require__(4);
+var _FeatureDetector = __webpack_require__(5);
 
 var _FeatureDetector2 = _interopRequireDefault(_FeatureDetector);
 
-var _DatabaseManager = __webpack_require__(5);
+var _DatabaseManager = __webpack_require__(6);
 
 var _DatabaseManager2 = _interopRequireDefault(_DatabaseManager);
 
@@ -10394,9 +10394,17 @@ var _config = __webpack_require__(1);
 
 var _config2 = _interopRequireDefault(_config);
 
+var _movieMatch = __webpack_require__(4);
+
+var _movieMatch2 = _interopRequireDefault(_movieMatch);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var tmdbIds = [];
+var allCandidates = [];
+var numFaces = 0;
 
 var ImageProcessor = function () {
     function ImageProcessor() {
@@ -10422,6 +10430,7 @@ var ImageProcessor = function () {
             var requestBody = '{"url": ' + '"' + url + '"}';
 
             (0, _jquery2.default)('.column').empty();
+            (0, _jquery2.default)('.error').addClass('hidden');
 
             // Request parameters.
             var params = {
@@ -10449,6 +10458,7 @@ var ImageProcessor = function () {
                 // Request body.
                 data: requestBody
             }).done(function (data) {
+                numFaces = data.length;
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
                 var _iteratorError = undefined;
@@ -10505,13 +10515,39 @@ var ImageProcessor = function () {
                 // Request body.
                 data: requestBody
             }).done(function (data) {
-                // Show formatted JSON on webpage.
-
-                var confidence = 0;
                 // Only one face is sent each call so 'data' should have length 1
                 if (data[0].candidates.length > 0) {
                     // data[0].candidates can be of length 0 or more, each has a 'personId' and a 'confidence' property
                     this.generateCards(data[0].candidates);
+                    var _iteratorNormalCompletion2 = true;
+                    var _didIteratorError2 = false;
+                    var _iteratorError2 = undefined;
+
+                    try {
+                        for (var _iterator2 = data[0].candidates[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                            var candidate = _step2.value;
+
+                            allCandidates.push(candidate);
+                        }
+                    } catch (err) {
+                        _didIteratorError2 = true;
+                        _iteratorError2 = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                _iterator2.return();
+                            }
+                        } finally {
+                            if (_didIteratorError2) {
+                                throw _iteratorError2;
+                            }
+                        }
+                    }
+
+                    numFaces--;
+                    if (numFaces <= 0) {
+                        this.matchMovies(allCandidates);
+                    }
                 }
             }.bind(this)).fail(function (jqXHR, textStatus, errorThrown) {
                 // Display error message.
@@ -10521,41 +10557,24 @@ var ImageProcessor = function () {
             }.bind(this));
         }
     }, {
-        key: 'resetPercentage',
-        value: function resetPercentage() {
-            (0, _jquery2.default)('#percentage').text(0);
-        }
-    }, {
-        key: 'updatePercentage',
-        value: function updatePercentage(_updatePercentage) {
-            _updatePercentage *= 100; // Convert to value out of 100 instead of out of 1
-            _updatePercentage = Math.round(_updatePercentage * 100) / 100; // Round to 2 decimal places
-            (0, _jquery2.default)('.result').removeClass('hidden');
-            var $percentage = (0, _jquery2.default)('#percentage');
-            if (_updatePercentage > $percentage.text()) {
-                $percentage.text(_updatePercentage);
-            }
-            (0, _jquery2.default)('.error').addClass('hidden');
-        }
-    }, {
         key: 'printError',
         value: function printError(errorString) {
-            (0, _jquery2.default)('.result').addClass('hidden');
             (0, _jquery2.default)('.error').removeClass('hidden');
             (0, _jquery2.default)('.error__text').text(errorString);
+            (0, _jquery2.default)('.column').empty();
         }
     }, {
         key: 'generateCards',
         value: function generateCards(candidates) {
             var _this = this;
 
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
 
             try {
                 var _loop = function _loop() {
-                    var candidate = _step2.value;
+                    var candidate = _step3.value;
 
                     var $nameSpan = (0, _jquery2.default)('<span>').text('Loading...');
                     var $html = (0, _jquery2.default)('<div>', { 'class': 'card' }).append((0, _jquery2.default)('<h2>').text('Name: ').append($nameSpan), (0, _jquery2.default)('<h2>').text('Facial Match: ').append((0, _jquery2.default)('<span>', { 'class': 'title' }).text(_this.toPercentage(candidate.confidence)), (0, _jquery2.default)('<span>').text('%')));
@@ -10571,30 +10590,75 @@ var ImageProcessor = function () {
                             var resultJSON = JSON.parse(result);
                             $nameSpan.text(resultJSON.name);
                         }
+                    }).fail(function () {
+                        //TODO: error handling
                     });
 
                     // Add to DOM
                     (0, _jquery2.default)('.column--actors').append($html);
                 };
 
-                for (var _iterator2 = candidates[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                for (var _iterator3 = candidates[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
                     var query;
 
                     _loop();
                 }
             } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                        _iterator2.return();
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
                     }
                 } finally {
-                    if (_didIteratorError2) {
-                        throw _iteratorError2;
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
                     }
                 }
+            }
+        }
+    }, {
+        key: 'matchMovies',
+        value: function matchMovies(candidates) {
+            var numCandidates = candidates.length;
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
+
+            try {
+                for (var _iterator4 = candidates[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    var candidate = _step4.value;
+
+                    var query = { 'personId': candidate.personId };
+                    // Retrieve records matching the personId's of the candidates
+                    _jquery2.default.get('/api/actor', query, this.onTmdbIdRetrieval.bind(this, numCandidates));
+                }
+            } catch (err) {
+                _didIteratorError4 = true;
+                _iteratorError4 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                        _iterator4.return();
+                    }
+                } finally {
+                    if (_didIteratorError4) {
+                        throw _iteratorError4;
+                    }
+                }
+            }
+        }
+
+        // response holds a name, a personId, and a tmdbId
+
+    }, {
+        key: 'onTmdbIdRetrieval',
+        value: function onTmdbIdRetrieval(numCandidates, response) {
+            response = JSON.parse(response);
+            tmdbIds.push(response.tmdbId);
+            if (tmdbIds.length === numCandidates) {
+                new _movieMatch2.default(tmdbIds);
             }
         }
     }, {
@@ -10613,6 +10677,291 @@ exports.default = ImageProcessor;
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var api_key = '190078ca8ad2919e5e468521e5d5114a';
+var uri_root = 'https://api.themoviedb.org/3/';
+var combinedList = [];
+var numActors = 0;
+var numListsRetrieved = 0;
+
+var MAX_MATCHES = 10; // The most number of common titles to be displayed
+
+var movieMatch = function () {
+    function movieMatch(actorTMDBids) {
+        _classCallCheck(this, movieMatch);
+
+        actorTMDBids = this.removeDoubles(actorTMDBids);
+        numActors = actorTMDBids.length;
+        this.findMovies(actorTMDBids);
+    }
+
+    _createClass(movieMatch, [{
+        key: 'findMovies',
+        value: function findMovies(actorTMDBids) {
+            for (var i = 0; i < numActors; i++) {
+                var actorId = actorTMDBids[i];
+                this.retrieveAll(actorId);
+            }
+        }
+    }, {
+        key: 'retrieveAll',
+        value: function retrieveAll(actorId) {
+
+            var query = {};
+            query.api_key = api_key;
+            var url = uri_root + "person/" + actorId + "/combined_credits";
+            _jquery2.default.get(url, query, this.retrieveAllResponse.bind(this));
+        }
+    }, {
+        key: 'splitTVMovie',
+        value: function splitTVMovie(combinedList) {
+            var movieList = [];
+            var tvList = [];
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = combinedList[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var castItem = _step.value;
+
+                    if (castItem.media_type == "tv") {
+                        tvList.push({
+                            "id": castItem.id,
+                            "name": castItem.name
+                        });
+                    } else if (castItem.media_type == "movie") {
+                        movieList.push({
+                            "id": castItem.id,
+                            "name": castItem.title
+                        });
+                    }
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            return { "movie": movieList, "tv": tvList };
+        }
+    }, {
+        key: 'retrieveAllResponse',
+        value: function retrieveAllResponse(response) {
+            var splitList = this.splitTVMovie(response.cast);
+            this.addNewCombinedList(splitList);
+        }
+    }, {
+        key: 'addNewCombinedList',
+        value: function addNewCombinedList(splitList) {
+            combinedList.push(splitList);
+            numListsRetrieved++;
+            if (numListsRetrieved == numActors) this.checkMatches();
+        }
+    }, {
+        key: 'checkMatches',
+        value: function checkMatches() {
+            this.sortCombinedList();
+            this.checkForMatchesInList(combinedList, 'movie');
+            this.checkForMatchesInList(combinedList, 'tv');
+        }
+    }, {
+        key: 'sortCombinedList',
+        value: function sortCombinedList() {
+            //TODO: Sort combined List elements as a stretch goal
+        }
+    }, {
+        key: 'checkForMatchesInList',
+        value: function checkForMatchesInList(combinedList, type) {
+            var hitList = [];
+            for (var i = 0; i < numActors - 1; i++) {
+                var listToCheck = combinedList[i][type];
+                for (var j = 0; j < listToCheck.length; j++) {
+                    var idToCheck = listToCheck[j].id;
+                    for (var k = i + 1; k < numActors; k++) {
+                        var secondList = combinedList[k][type];
+
+                        if (this.checkIDAgainstList(idToCheck, secondList)) hitList = this.addElemToHitList(listToCheck[j], type, hitList);
+                    }
+                }
+            }
+            if (numActors > 2) {
+                this.sortHitList();
+            }
+            this.displayMovieMatches(hitList);
+        }
+    }, {
+        key: 'checkIDAgainstList',
+        value: function checkIDAgainstList(id, list) {
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = list[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var elem = _step2.value;
+
+                    if (elem.id == id) return true;
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }, {
+        key: 'addElemToHitList',
+        value: function addElemToHitList(elemToCheck, type, hitList) {
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
+
+            try {
+                for (var _iterator3 = hitList[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var elem = _step3.value;
+
+                    if (elem.id === elemToCheck.id && elem.type === type) {
+                        // Element already exists in hitlist
+                        elem.count++; // increment its hit counter
+                        return hitList;
+                    }
+                }
+                // Add element to hitlist
+            } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
+                    }
+                } finally {
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
+                    }
+                }
+            }
+
+            var hitObject = {};
+            hitObject.id = elemToCheck.id;
+            hitObject.name = elemToCheck.name;
+            hitObject.type = type;
+            hitObject.count = 2;
+            hitList.push(hitObject);
+            return hitList;
+        }
+    }, {
+        key: 'sortHitList',
+        value: function sortHitList(hitList) {
+            hitList.sort(function (a, b) {
+                return a.count - b.count;
+            });
+        }
+    }, {
+        key: 'removeDoubles',
+        value: function removeDoubles(tmdbIds) {
+            var seen = {};
+            return tmdbIds.filter(function (item) {
+                return seen.hasOwnProperty(item) ? false : seen[item] = true;
+            });
+        }
+        /*
+        allTitles is of the form:
+        [
+            {
+                'type': 'movie'/'tv',
+                'id': 'asdfasdf',
+                'count': 3
+            }
+        ]
+        */
+
+    }, {
+        key: 'displayMovieMatches',
+        value: function displayMovieMatches(hitList) {
+            // Take at most top MAX_MATCHES hits
+            if (hitList.length > MAX_MATCHES) {
+                hitList = hitList.slice(0, MAX_MATCHES);
+            }
+
+            this.generateCards(hitList);
+        }
+    }, {
+        key: 'generateCards',
+        value: function generateCards(topTitles) {
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
+
+            try {
+                for (var _iterator4 = topTitles[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    var title = _step4.value;
+
+                    var $html = (0, _jquery2.default)('<div>', { 'class': 'card' }).append((0, _jquery2.default)('<h2>').text('Title: ').append((0, _jquery2.default)('<span>').text(title.name)), (0, _jquery2.default)('<h2>').text('Features ').append((0, _jquery2.default)('<span>', { 'class': 'title' }).text(title.count), (0, _jquery2.default)('<span>').text(' of the actors.')));
+                    (0, _jquery2.default)('.column--titles').append($html);
+                }
+            } catch (err) {
+                _didIteratorError4 = true;
+                _iteratorError4 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                        _iterator4.return();
+                    }
+                } finally {
+                    if (_didIteratorError4) {
+                        throw _iteratorError4;
+                    }
+                }
+            }
+        }
+    }]);
+
+    return movieMatch;
+}();
+
+exports.default = movieMatch;
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10647,7 +10996,7 @@ var FeatureDetector = function () {
 exports.default = FeatureDetector;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
