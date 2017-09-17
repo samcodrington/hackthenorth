@@ -75,6 +75,7 @@ class movieMatch{
                 }
             } 
         }
+        sortHitList();
     }
     checkIDAgainstList(id,list){
         for (let elem of list){
@@ -82,6 +83,14 @@ class movieMatch{
                 return true;
         }
         return false;
+    }
+
+    addIDToHitLIst(IdToCheck, type){
+
+    }
+
+    sortHitList(){
+
     }
 
     removeDoubles(tmdbIds) {
