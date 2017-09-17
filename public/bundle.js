@@ -10336,6 +10336,9 @@ Object.defineProperty(exports, "__esModule", {
 var config = {
     azure: {
         key: '54c8c00683f845348a1ff443a3fa536a'
+    },
+    tmdb: {
+        key: '190078ca8ad2919e5e468521e5d5114a'
     }
 };
 
@@ -10701,7 +10704,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var api_key = _config2.default.azure.key;
+var api_key = _config2.default.tmdb.key;
 var uri_root = 'https://api.themoviedb.org/3/';
 var combinedList = [];
 var numActors = 0;
@@ -11031,7 +11034,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var person_group_id = 'group1';
 
-var api_key = _config2.default.azure.key;
+var api_key = _config2.default.tmdb.key;
 var uri_root = 'https://api.themoviedb.org/3/';
 var max_image_set_size = 5;
 
