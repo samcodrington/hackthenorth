@@ -19,8 +19,8 @@ class ImageProcessor {
         var uriBase = "https://westus.api.cognitive.microsoft.com/face/v1.0/detect";
         var contentType = "application/json";
         var requestBody = '{"url": ' + '"' + url + '"}';
-    
-        this.resetPercentage();
+
+        $('.column').empty();
 
         // Request parameters.
         var params = {
@@ -70,7 +70,7 @@ class ImageProcessor {
         var contentType = "application/json";
         var requestBody = JSON.stringify({
             faceIds: [faceID],
-            personGroupId: 'jon-snow'
+            personGroupId: 'group1'
         });
 
         $.ajax({
@@ -92,19 +92,19 @@ class ImageProcessor {
             // Show formatted JSON on webpage.
             
             var confidence = 0;
+            // Only one face is sent each call so 'data' should have length 1
             if (data[0].candidates.length > 0) {
-                confidence = data[0].candidates[0].confidence;
+                // data[0].candidates can be of length 0 or more, each has a 'personId' and a 'confidence' property
+                this.generateCards(data[0].candidates);
             }
-            this.updatePercentage(confidence);
-            $("#responseTextArea").val(JSON.stringify(data, null, 2));
             
         }.bind(this))
     
         .fail(function(jqXHR, textStatus, errorThrown) {
             // Display error message.
             var errorString = (errorThrown === "") ? "Error. " : errorThrown + " (" + jqXHR.status + "): ";
-            errorString += (jqXHR.responseText === "") ? "" : (jQuery.parseJSON(jqXHR.responseText).message) ? 
-                jQuery.parseJSON(jqXHR.responseText).message : jQuery.parseJSON(jqXHR.responseText).error.message;
+            errorString += (jqXHR.responseText === "") ? "" : ($.parseJSON(jqXHR.responseText).message) ? 
+                $.parseJSON(jqXHR.responseText).message : $.parseJSON(jqXHR.responseText).error.message;
             this.printError(errorString);
         }.bind(this));
     }
@@ -128,6 +128,42 @@ class ImageProcessor {
         $('.result').addClass('hidden');
         $('.error').removeClass('hidden');
         $('.error__text').text(errorString);
+    }
+
+    generateCards(candidates) {
+        for (let candidate of candidates) {
+            let $nameSpan = $('<span>').text('Loading...');
+            let $html = $('<div>', {'class': 'card'}).append(
+                $('<h2>').text('Name: ').append(
+                    $nameSpan
+                ),
+                $('<h2>').text('Facial Match: ').append(
+                    $('<span>', {'class': 'title'}).text(this.toPercentage(candidate.confidence)),
+                    $('<span>').text('%')
+                )
+            )
+
+            // Asynchronously  load name from personId
+            var query = {};
+            query.personId = candidate.personId;
+            $.get('/api/actor', query, function(result) {
+                if (result.error) {
+                    $nameSpan.text('Error loading name.');
+                } else {
+                    var resultJSON = JSON.parse(result);
+                    $nameSpan.text(resultJSON.name);
+                }
+            });
+
+            // Add to DOM
+            $('.column--actors').append($html);
+        }
+    }
+
+    toPercentage(confidence) {
+        confidence *= 100;
+        confidence = Math.round(confidence * 100) / 100;
+        return confidence;
     }
 
 }
