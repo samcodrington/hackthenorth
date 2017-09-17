@@ -35,9 +35,9 @@ class movieMatch{
         var tvList = [];
         for (let castItem of combinedList){
             if (castItem.media_type == "tv")
-                tvList.push({"id":castItem.id,"title":castItem.title});
+                tvList.push({"id":castItem.id,"name":castItem.title});
             else if (castItem.media_type == "movie")
-                movieList.push({"id":castItem.id,"title":castItem.title});
+                movieList.push({"id":castItem.id,"name":castItem.title});
         }
         return [movieList,tvList];
     }
