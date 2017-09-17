@@ -29,13 +29,13 @@ router.get('/actor', function(req, res, next) {
 
 router.post('/actor', function(req, res, next) {
     var actorData = {
-        name: body.name,
-        personId: body.personId,
-        tmdbId: body.tmdbId
+        name: req.body.name,
+        personId: req.body.personId,
+        tmdbId: req.body.tmdbId
     }
     var actor = new ActorModel(actorData);
     actor.save();
-    res.send(200);
+    res.sendStatus(200);
 });
 
 module.exports = router;
