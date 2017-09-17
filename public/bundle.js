@@ -10423,7 +10423,7 @@ var ImageProcessor = function () {
             var contentType = "application/json";
             var requestBody = '{"url": ' + '"' + url + '"}';
 
-            this.resetPercentage();
+            (0, _jquery2.default)('.column').empty();
 
             // Request parameters.
             var params = {
@@ -10490,7 +10490,7 @@ var ImageProcessor = function () {
             var contentType = "application/json";
             var requestBody = JSON.stringify({
                 faceIds: [faceID],
-                personGroupId: 'jon-snow'
+                personGroupId: 'group1'
             });
 
             _jquery2.default.ajax({
@@ -10510,15 +10510,15 @@ var ImageProcessor = function () {
                 // Show formatted JSON on webpage.
 
                 var confidence = 0;
+                // Only one face is sent each call so 'data' should have length 1
                 if (data[0].candidates.length > 0) {
-                    confidence = data[0].candidates[0].confidence;
+                    // data[0].candidates can be of length 0 or more, each has a 'personId' and a 'confidence' property
+                    this.generateCards(data[0].candidates);
                 }
-                this.updatePercentage(confidence);
-                (0, _jquery2.default)("#responseTextArea").val(JSON.stringify(data, null, 2));
             }.bind(this)).fail(function (jqXHR, textStatus, errorThrown) {
                 // Display error message.
                 var errorString = errorThrown === "" ? "Error. " : errorThrown + " (" + jqXHR.status + "): ";
-                errorString += jqXHR.responseText === "" ? "" : jQuery.parseJSON(jqXHR.responseText).message ? jQuery.parseJSON(jqXHR.responseText).message : jQuery.parseJSON(jqXHR.responseText).error.message;
+                errorString += jqXHR.responseText === "" ? "" : _jquery2.default.parseJSON(jqXHR.responseText).message ? _jquery2.default.parseJSON(jqXHR.responseText).message : _jquery2.default.parseJSON(jqXHR.responseText).error.message;
                 this.printError(errorString);
             }.bind(this));
         }
@@ -10545,6 +10545,66 @@ var ImageProcessor = function () {
             (0, _jquery2.default)('.result').addClass('hidden');
             (0, _jquery2.default)('.error').removeClass('hidden');
             (0, _jquery2.default)('.error__text').text(errorString);
+        }
+    }, {
+        key: 'generateCards',
+        value: function generateCards(candidates) {
+            var _this = this;
+
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                var _loop = function _loop() {
+                    var candidate = _step2.value;
+
+                    var $nameSpan = (0, _jquery2.default)('<span>').text('Loading...');
+                    var $html = (0, _jquery2.default)('<div>', { 'class': 'card' }).append((0, _jquery2.default)('<h2>').text('Name: ').append($nameSpan), (0, _jquery2.default)('<h2>').text('Facial Match: ').append((0, _jquery2.default)('<span>', { 'class': 'title' }).text(_this.toPercentage(candidate.confidence)), (0, _jquery2.default)('<span>').text('%')));
+
+                    // Asynchronously  load name from personId
+                    query = {};
+
+                    query.personId = candidate.personId;
+                    _jquery2.default.get('/api/actor', query, function (result) {
+                        if (result.error) {
+                            $nameSpan.text('Error loading name.');
+                        } else {
+                            var resultJSON = JSON.parse(result);
+                            $nameSpan.text(resultJSON.name);
+                        }
+                    });
+
+                    // Add to DOM
+                    (0, _jquery2.default)('.column--actors').append($html);
+                };
+
+                for (var _iterator2 = candidates[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var query;
+
+                    _loop();
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
+            }
+        }
+    }, {
+        key: 'toPercentage',
+        value: function toPercentage(confidence) {
+            confidence *= 100;
+            confidence = Math.round(confidence * 100) / 100;
+            return confidence;
         }
     }]);
 
