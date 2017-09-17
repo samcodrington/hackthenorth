@@ -9,10 +9,11 @@ class movieMatch{
     findMovies(actorTMDBids){
         var movieIDs = checkMatches(actorIMDBids);
         var movieInfo = retrieveMovieMatches(movieIDs);
-        displayMovieMatches();
+        displayMovieMatches(movieInfo);
     }
     checkMatches(actorTMDBids){
-        var movieIDs = {"movie":{"movieID":"","movieName":""}};
+        var movieIDs = [];
+        var tvIDs = 
         for (i = 0; i < actorTMDBids.length; i++){
             var actorId = actorTMDBids[i];
             movieIDs[i] = retrieveMovies(actorId);
@@ -23,6 +24,7 @@ class movieMatch{
     retrieveMovies(actorId){
         var query = {};
         query.api_key = api_key;
-        var url = uri_root + "/person/" + actorId + "/combined_credits"
+        var url = uri_root + "/person/" + actorId + "/movie_credits"
+
     }
 }
