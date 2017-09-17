@@ -40,7 +40,7 @@ class movieMatch{
             else if (castItem.media_type == "movie")
                 movieList.push({"id":castItem.id,"name":castItem.title});
         }
-        return [movieList,tvList];
+        return {"movie":movieList,"tv":tvList};
     }
     
     retrieveAllResponse(response){
@@ -57,12 +57,31 @@ class movieMatch{
     
     checkMatches(){
         sortCombinedList();
-        for (i = 0; i < numActors; i++){
-            var combinedList[0].
-        }
+        checkForMatchesInList(combinedList,'movie');
+        checkForMatchesInList(combinedList,'tv');
     }
     sortCombinedList(){
         //TODO: Sort combined List elements as a stretch goal
+    }
+    checkForMatchesInList(combinedList, type){
+        for (var i = 0; i < numActors; i++){
+            for (var j = 0; j < combinedList[i][type].length; j ++){
+                var idToCheck = combinedList[i][type].id;
+                for (var k = i + 1; k < numActors; k ++){
+                    if (   checkIDAgainstList(idToCheck, combinedList[k][type])  )
+                        addIDToHitList(idToCheck,type)
+                }
+                   
+
+            } 
+        }
+    }
+    checkIDAgainstList(id,list){
+        for (let elem of list){
+            if (elem.id == id)
+                return true;
+        }
+        return false;
     }
 
     removeDoubles(tmdbIds) {
