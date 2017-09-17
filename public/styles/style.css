@@ -162,14 +162,32 @@ span.title {
     padding: 0.5rem;
     margin-bottom: 0.5rem;
     font-size: 3rem;
+    position: relative;
 }
 .card h2 {
         color: #343F3E;
+    }
+.card h2, .card a, .card span {
+        z-index: 2;
     }
 @media (min-width: 1010px) {
 .card {
         font-size: 1.5rem
 }
+    }
+.card--tv::after, .card--movie::after {
+        content: 'TV';
+        font-family: 'Bree Serif', serif;
+        font-size: 3rem;
+        color: #B3CEF2;
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        right: 0;
+        bottom: 0;
+    }
+.card--movie::after {
+        content: 'MOVIE';
     }
 .bottom {
     background: #B3CEF2;

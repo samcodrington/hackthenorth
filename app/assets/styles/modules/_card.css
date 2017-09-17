@@ -3,12 +3,33 @@
     padding: 0.5rem;
     margin-bottom: 0.5rem;
     font-size: 3rem;
+    position: relative;
 
     & h2 {
         color: $darkGrey;
     }
 
+    & h2, & a, & span {
+        z-index: 2;
+    }
+
     @mixin atLarge {
         font-size: 1.5rem;
+    }
+
+    &--tv::after, &--movie::after {
+        content: 'TV';
+        font-family: 'Bree Serif', serif;
+        font-size: 3rem;
+        color: $lighterBlue;
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    &--movie::after {
+        content: 'MOVIE';
     }
 }

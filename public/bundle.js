@@ -10988,7 +10988,7 @@ var movieMatch = function () {
                     var title = _step5.value;
 
                     var $titleSpan = (0, _jquery2.default)('<a>', { 'class': 'nameSpan', 'href': BASE_URI + title.id }).text(title.name);
-                    var $html = (0, _jquery2.default)('<div>', { 'class': 'card' }).append((0, _jquery2.default)('<h2>').text('Title: ').append($titleSpan), (0, _jquery2.default)('<h2>').text('Features ').append((0, _jquery2.default)('<span>', { 'class': 'title' }).text(title.count), (0, _jquery2.default)('<span>').text(' of the actors.')));
+                    var $html = (0, _jquery2.default)('<div>', { 'class': 'card ' + 'card--' + title.type }).append((0, _jquery2.default)('<h2>').text('Title: ').append($titleSpan), (0, _jquery2.default)('<h2>').text('Features ').append((0, _jquery2.default)('<span>', { 'class': 'title' }).text(title.count), (0, _jquery2.default)('<span>').text(' of the actors.')));
                     (0, _jquery2.default)('.column--titles').append($html);
                 }
             } catch (err) {
