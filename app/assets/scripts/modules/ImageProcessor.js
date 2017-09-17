@@ -30,7 +30,7 @@ class ImageProcessor {
         };
         if (url){
             // Display the image.
-            document.querySelector(".img-container").src = url;
+            document.querySelector(".img-container img").src = url;
         }
     
         // Perform the REST API call.
