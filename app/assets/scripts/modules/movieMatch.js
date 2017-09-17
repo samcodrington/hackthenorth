@@ -153,7 +153,7 @@ class movieMatch{
 
     generateCards(topTitles) {
         for (let title of topTitles) {
-            let $titleSpan = $('<span>', {'class': 'nameSpan'}).text(title.name);
+            let $titleSpan = $('<a>', {'class': 'nameSpan', 'href': BASE_URI + title.id}).text(title.name);
             let $html = $('<div>', {'class': 'card'}).append(
                 $('<h2>').text('Title: ').append(
                     $titleSpan
@@ -163,10 +163,6 @@ class movieMatch{
                     $('<span>').text(' of the actors.')
                 )
             );
-
-            $titleSpan.on('click', () => {
-                window.location.href = BASE_URI + title.id;
-            });
             $('.column--titles').append($html);
         }
     }

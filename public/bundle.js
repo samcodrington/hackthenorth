@@ -10576,7 +10576,7 @@ var ImageProcessor = function () {
                 var _loop = function _loop() {
                     var candidate = _step3.value;
 
-                    var $nameSpan = (0, _jquery2.default)('<span>', { 'class': 'nameSpan' }).text('Loading...');
+                    var $nameSpan = (0, _jquery2.default)('<a>', { 'class': 'nameSpan', 'href': '#' }).text('Loading...');
                     var $html = (0, _jquery2.default)('<div>', { 'class': 'card' }).append((0, _jquery2.default)('<h2>').text('Name: ').append($nameSpan), (0, _jquery2.default)('<h2>').text('Facial Match: ').append((0, _jquery2.default)('<span>', { 'class': 'title' }).text(_this.toPercentage(candidate.confidence)), (0, _jquery2.default)('<span>').text('%')));
 
                     // Asynchronously  load name from personId
@@ -10589,9 +10589,7 @@ var ImageProcessor = function () {
                         } else {
                             var resultJSON = JSON.parse(result);
                             $nameSpan.text(resultJSON.name);
-                            $nameSpan.on('click', function () {
-                                window.location.href = BASE_URI + resultJSON.tmdbId;
-                            });
+                            $nameSpan.attr('href', BASE_URI + resultJSON.tmdbId);
                         }
                     }).fail(function () {
                         //TODO: error handling
@@ -10938,20 +10936,12 @@ var movieMatch = function () {
             var _iteratorError4 = undefined;
 
             try {
-                var _loop = function _loop() {
+                for (var _iterator4 = topTitles[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
                     var title = _step4.value;
 
-                    var $titleSpan = (0, _jquery2.default)('<span>', { 'class': 'nameSpan' }).text(title.name);
+                    var $titleSpan = (0, _jquery2.default)('<a>', { 'class': 'nameSpan', 'href': BASE_URI + title.id }).text(title.name);
                     var $html = (0, _jquery2.default)('<div>', { 'class': 'card' }).append((0, _jquery2.default)('<h2>').text('Title: ').append($titleSpan), (0, _jquery2.default)('<h2>').text('Features ').append((0, _jquery2.default)('<span>', { 'class': 'title' }).text(title.count), (0, _jquery2.default)('<span>').text(' of the actors.')));
-
-                    $titleSpan.on('click', function () {
-                        window.location.href = BASE_URI + title.id;
-                    });
                     (0, _jquery2.default)('.column--titles').append($html);
-                };
-
-                for (var _iterator4 = topTitles[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                    _loop();
                 }
             } catch (err) {
                 _didIteratorError4 = true;

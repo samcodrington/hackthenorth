@@ -130,7 +130,7 @@ class ImageProcessor {
 
     generateCards(candidates) {
         for (let candidate of candidates) {
-            let $nameSpan = $('<span>', {'class': 'nameSpan'}).text('Loading...');
+            let $nameSpan = $('<a>', {'class': 'nameSpan', 'href': '#'}).text('Loading...');
             let $html = $('<div>', {'class': 'card'}).append(
                 $('<h2>').text('Name: ').append(
                     $nameSpan
@@ -150,9 +150,7 @@ class ImageProcessor {
                 } else {
                     var resultJSON = JSON.parse(result);
                     $nameSpan.text(resultJSON.name);
-                    $nameSpan.on('click', () => {
-                        window.location.href = BASE_URI + resultJSON.tmdbId;
-                    });
+                    $nameSpan.attr('href', BASE_URI + resultJSON.tmdbId);
                 }
             }).
             fail(function() {
