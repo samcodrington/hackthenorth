@@ -95,7 +95,6 @@ class movieMatch{
         hitList.sort(function(a,b){
             return a.count - b.count
         })
-
     }
 
     removeDoubles(tmdbIds) {
