@@ -136,9 +136,9 @@ class DatabaseManager {
     // Called in a loop from addFaces
     addFacesResponse(personID, imageUrl, response){
         var faceID = response[0].faceID;
+        console.log(response[0]);
         var responseFace = "&targetFace="+response[0].faceRectangle.left +","+ response[0].faceRectangle.top + "," 
-                + response[0].faceRectangle.right +","+response[0].faceRectangle.bottom;
-
+                + response[0].faceRectangle.width +","+response[0].faceRectangle.height;
         // Add face to person
         var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ person_group_id +"/persons/" + personID + "/persistedFaces" + responseFace;
 
