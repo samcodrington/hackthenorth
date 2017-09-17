@@ -1,10 +1,15 @@
 .textbox {
     display: inline-block;
-    height: 4rem;
+    height: 7rem;
     font-family: 'Raleway', sans-serif;
-    font-size: 2rem;
+    font-size: 4rem;
     width: 100%;
-    /* position: absolute; */
     top: 0;
     left: 0;
+
+    @mixin atLarge {
+        width: 75%;
+        height: 4rem;
+        font-size: 2rem;
+    }
 }

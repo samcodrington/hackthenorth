@@ -1,7 +1,7 @@
 .column {
-    /* background-color: rgba($mediumBlue, 0.5); */
-    width: 50%;
+    width: 100%;
     margin: 0;
+    margin-bottom: 3rem;
     display: inline-block;
     padding-right: 0.25rem;
     float: left;
@@ -11,5 +11,8 @@
         padding: 0;
         padding-left: 0.25rem;
     }
-    margin-bottom: 3rem;
+
+    @mixin atLarge {
+        width: 50%;
+    }
 }

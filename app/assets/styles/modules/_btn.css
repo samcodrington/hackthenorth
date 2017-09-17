@@ -1,17 +1,24 @@
 .btn {
     display: inline-block;
-    height: 4rem;
+    height: 7rem;
     width: 100%;
     padding: 0 1rem;
-    background: $lightBlue;
+    background: $mediumBlue;
     font-family: 'Raleway', sans-serif;
-    font-size: 2rem;
+    font-size: 4rem;
     font-weight: bold;
-    color: $darkGrey;
+    color: $whiteBlue;
     border: none;
     cursor: pointer;
 
     &:hover {
-        background-color: $lighterBlue;
+        background-color: $lighterMediumBlue;
+    }
+
+    @mixin atLarge {
+        width: 25%;
+        float: right;
+        height: 4rem;
+        font-size: 2rem;
     }
 }

@@ -1,4 +1,12 @@
 .img-container {
     width: 100%;
     height: auto;
+    text-align: center;
+    position: relative;
+    
+    & img {
+        @mixin atLarge {
+            width: 50%;
+        }
+    }
 }
