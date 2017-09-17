@@ -54,6 +54,9 @@ a {
         font-size: 3rem
 }
     }
+span.title {
+    width: auto;
+}
 .drop-zone {
     position: absolute;
     height: 100%;
