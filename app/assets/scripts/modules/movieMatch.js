@@ -55,7 +55,13 @@ class movieMatch{
     }
     
     checkMatches(){
+        sortCombinedList();
+        for (i = 0; i < numActors; i++){
 
+        }
+    }
+    sortCombinedList(){
+        //TODO: Sort combined List elements as a stretch goal
     }
 
     removeDoubles(tmdbIds) {
