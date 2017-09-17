@@ -1,6 +1,8 @@
 import $ from 'jquery';
+import config from '../../../../public/data/config.js';
 
-let api_key = '190078ca8ad2919e5e468521e5d5114a';
+
+let api_key = config.azure.key;
 let uri_root = 'https://api.themoviedb.org/3/';
 let combinedList = [];
 let numActors = 0;
