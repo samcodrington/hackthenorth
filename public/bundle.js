@@ -10433,8 +10433,12 @@ var ImageProcessor = function () {
             var contentType = "application/json";
             var requestBody = '{"url": ' + '"' + url + '"}';
 
+            // Reset
             (0, _jquery2.default)('.column').empty();
             (0, _jquery2.default)('.error').addClass('hidden');
+            tmdbIds = [];
+            allCandidates = [];
+            numFaces = 0;
 
             // Request parameters.
             var params = {
@@ -10716,6 +10720,11 @@ var BASE_URI = 'https://www.themoviedb.org/movie/';
 var movieMatch = function () {
     function movieMatch(actorTMDBids) {
         _classCallCheck(this, movieMatch);
+
+        // Reset 'global' variables
+        combinedList = [];
+        numActors = 0;
+        numListsRetrieved = 0;
 
         actorTMDBids = this.removeDoubles(actorTMDBids);
         numActors = actorTMDBids.length;
@@ -11162,21 +11171,19 @@ var DatabaseManager = function () {
                 (0, _jquery2.default)('#tmdbImgContainer').empty();
             }
         }
-    }, {
-        key: 'createAzurePersonGroup',
-        value: function createAzurePersonGroup(groupId, groupName) {
-            var query = {};
-            query.api_key = _config2.default.azure.key;
-            query.name = groupName;
-            var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/" + groupId + "/persons";
 
-            _jquery2.default.get(url, query, this.onAzurePersonGroupResponse);
-        }
-    }, {
-        key: 'onAzurePersonGroupResponse',
-        value: function onAzurePersonGroupResponse(response) {}
-        //TODO: 
+        // createAzurePersonGroup(groupId, groupName){
+        //     var query = {};
+        //     query.api_key = config.azure.key;
+        //     query.name = groupName;
+        //     var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ groupId + "/persons"
 
+        //     $.get(url,query,this.onAzurePersonGroupResponse)
+        // }
+
+        // onAzurePersonGroupResponse(response){
+        //     //TODO: 
+        // }
 
         // Entry Point of Azure Insertion
 

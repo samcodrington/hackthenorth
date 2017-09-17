@@ -26,8 +26,12 @@ class ImageProcessor {
         var contentType = "application/json";
         var requestBody = '{"url": ' + '"' + url + '"}';
 
+        // Reset
         $('.column').empty();
         $('.error').addClass('hidden');
+        tmdbIds = [];
+        allCandidates = [];
+        numFaces = 0;
 
 
         // Request parameters.
