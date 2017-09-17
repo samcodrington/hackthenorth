@@ -6,7 +6,7 @@ https://coolors.co/4a8edb-246ec1-a8533f-2a374f-343f3e
 */
 body {
     margin: 0;
-    background-color: #DCEDFF;
+    background-color: #B3CEF2;
     font-family: 'Raleway', sans-serif;
     color: #343F3E;
 }
@@ -178,4 +178,5 @@ span.title {
 }
 .top {
     margin-bottom: 1rem;
+    background-color: #DCEDFF;
 }

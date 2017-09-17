@@ -10702,7 +10702,7 @@ var combinedList = [];
 var numActors = 0;
 var numListsRetrieved = 0;
 
-var MAX_MATCHES = 10; // The most number of common titles to be displayed
+var MAX_MATCHES = 5; // The most number of common titles to be displayed
 
 var movieMatch = function () {
     function movieMatch(actorTMDBids) {
@@ -10813,7 +10813,7 @@ var movieMatch = function () {
                 }
             }
             if (numActors > 2) {
-                this.sortHitList();
+                this.sortHitList(hitList);
             }
             this.displayMovieMatches(hitList);
         }
