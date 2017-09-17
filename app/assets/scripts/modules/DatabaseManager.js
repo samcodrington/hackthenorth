@@ -103,18 +103,18 @@ class DatabaseManager {
         }
     }
 
-    createAzurePersonGroup(groupId, groupName){
-        var query = {};
-        query.api_key = config.azure.key;
-        query.name = groupName;
-        var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ groupId + "/persons"
+    // createAzurePersonGroup(groupId, groupName){
+    //     var query = {};
+    //     query.api_key = config.azure.key;
+    //     query.name = groupName;
+    //     var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+ groupId + "/persons"
 
-        $.get(url,query,this.onAzurePersonGroupResponse)
-    }
+    //     $.get(url,query,this.onAzurePersonGroupResponse)
+    // }
 
-    onAzurePersonGroupResponse(response){
-        //TODO: 
-    }
+    // onAzurePersonGroupResponse(response){
+    //     //TODO: 
+    // }
 
     // Entry Point of Azure Insertion
     createAzurePerson(name, urls, tmdbId) {

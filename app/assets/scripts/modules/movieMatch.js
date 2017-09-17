@@ -14,6 +14,11 @@ const BASE_URI = 'https://www.themoviedb.org/movie/';
 class movieMatch{
     
     constructor(actorTMDBids){
+        // Reset 'global' variables
+        combinedList = [];
+        numActors = 0;
+        numListsRetrieved = 0;
+
         actorTMDBids = this.removeDoubles(actorTMDBids);        
         numActors = actorTMDBids.length;
         this.findMovies(actorTMDBids);
