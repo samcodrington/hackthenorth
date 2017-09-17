@@ -12,20 +12,35 @@ class movieMatch{
         displayMovieMatches(movieInfo);
     }
     checkMatches(actorTMDBids){
-        var movieIDs = [];
-        var tvIDs = [];
+        var combinedIDs = [];
         for (i = 0; i < actorTMDBids.length; i++){
             var actorId = actorTMDBids[i];
-            movieIDs[i] = retrieveMovies(actorId);
-            tvIDs[i] = retrievetvIDs(actorId);
+            var combinedList = retrieveAll(actorId);
+            combinedIDs = splitTVMovie(combinedList);
         }
         
-        return movieIDs;
+        return combinedIDs;
     }
-    retrieveMovies(actorId){
+    splitTVMovie(combinedList){
+        var movieList = [];
+        var tvList = [];
+        for (let castItem of combinedList){
+            if (castItem.media_type == "tv")
+                tvList.push(castItem.id);
+            else if (castItem.media_type == "movie")
+                movieList.push(castItem.id);
+        }
+        return [movieList,tvList];
+    }
+    retrieveAll(actorId) {
         var query = {};
         query.api_key = api_key;
-        var url = uri_root + "/person/" + actorId + "/movie_credits"
+        var url = uri_root + "/person/" + actorId + "/combined_credits";
+        
+    }
+    retrieveMovies(actorId){
+        
+
 
     }
     removeDoubles(tmdbIds) {
