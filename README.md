@@ -1,6 +1,8 @@
 # hackthenorth
 Developed by 2 Brothers in 2 days for Hack the North 2017. Read all about it on [Devpost](https://devpost.com/software/wamsit-what-actor-movie-show-is-it)
 
+![Demo of WAMSIT](https://github.com/samcodrington/hackthenorth/raw/master/app/assets/img/demo.gif "Demo of WAMSIT")
+
 In order to implement for yourself, you'll need to
 1. create a valid config. file
 2. Install Node.js & MongoDB
