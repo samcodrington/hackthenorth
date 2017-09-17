@@ -75,7 +75,9 @@ class movieMatch{
                 }
             } 
         }
-        sortHitList();
+        if (numActors>2)
+            sortHitList();
+        console.log(hitList);
     }
     checkIDAgainstList(id,list){
         for (let elem of list){
@@ -89,7 +91,10 @@ class movieMatch{
 
     }
 
-    sortHitList(){
+    sortHitList(hitList){
+        hitList.sort(function(a,b){
+            return a.count - b.count
+        })
 
     }
 
