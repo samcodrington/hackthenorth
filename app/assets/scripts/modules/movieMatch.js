@@ -3,6 +3,7 @@ let api_key = '190078ca8ad2919e5e468521e5d5114a';
 let uri_root = 'https://api.themoviedb.org/3/';
 let combinedList = [];
 let numActors = 0;
+let numListsRetrieved = 0;
 
 class movieMatch{
     constructor(actorTMDBids){
@@ -47,6 +48,7 @@ class movieMatch{
     }
     addNewCombinedList(splitList){
         combinedList.push(splitList);
+        numListsRetrieved++;
     }
     removeDoubles(tmdbIds) {
         var seen = {};
