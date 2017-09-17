@@ -12,14 +12,17 @@ class movieMatch{
         displayMovieMatches();
     }
     checkMatches(actorTMDBids){
-        var movieIDs = {"movie":{"movieID":"","movieName":"","probability":""}};
+        var movieIDs = {"movie":{"movieID":"","movieName":""}};
         for (i = 0; i < actorTMDBids.length; i++){
-            movieIDs[i] = retrieveMovies(actorId)
+            var actorId = actorTMDBids[i];
+            movieIDs[i] = retrieveMovies(actorId);
         }
         
         return movieIDs;
     }
     retrieveMovies(actorId){
-        
+        var query = {};
+        query.api_key = api_key;
+        var url = uri_root + "/person/" + actorId + "/combined_credits"
     }
 }
