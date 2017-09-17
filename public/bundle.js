@@ -10632,23 +10632,30 @@ var DatabaseManager = function () {
     _createClass(DatabaseManager, [{
         key: 'events',
         value: function events() {
-            var _this = this;
+            (0, _jquery2.default)('#nameButton').on('click', this.onNameButtonClick.bind(this));
 
-            (0, _jquery2.default)('#nameButton').on('click', function () {
-                var name = (0, _jquery2.default)('#nameInput').val();
-                var query = {};
-                query.api_key = api_key;
-                query.query = name;
+            (0, _jquery2.default)('#nameInput').on('keypress', function (event) {
+                if (event.keyCode == 13) {
+                    this.onNameButtonClick();
+                }
+            }.bind(this));
+        }
+    }, {
+        key: 'onNameButtonClick',
+        value: function onNameButtonClick() {
+            var name = (0, _jquery2.default)('#nameInput').val();
+            var query = {};
+            query.api_key = api_key;
+            query.query = name;
 
-                var url = uri_root + 'search/person';
+            var url = uri_root + 'search/person';
 
-                _jquery2.default.get(url, query, _this.onNameQueryResponse.bind(_this, name));
-            });
+            _jquery2.default.get(url, query, this.onNameQueryResponse.bind(this, name));
         }
     }, {
         key: 'cacheTmdbConfig',
         value: function cacheTmdbConfig() {
-            var _this2 = this;
+            var _this = this;
 
             var query = {};
             query.api_key = api_key;
@@ -10656,9 +10663,9 @@ var DatabaseManager = function () {
 
             _jquery2.default.get(url, query, function (response) {
                 if (response) {
-                    _this2.base_url = response.images.base_url;
+                    _this.base_url = response.images.base_url;
                     var profile_sizes = response.images.profile_sizes;
-                    _this2.img_size = 'original';
+                    _this.img_size = 'original';
                 } else {
                     //TODO: error handling
                 }
@@ -10671,9 +10678,7 @@ var DatabaseManager = function () {
             data.name = name;
             data.tmdbId = tmdbId;
             data.personId = personId;
-            _jquery2.default.post('/api/actor', data, function () {
-                console.log('Success! Actor ' + name + ' inserted.');
-            });
+            _jquery2.default.post('/api/actor', data, function () {});
         }
     }, {
         key: 'onNameQueryResponse',
@@ -10808,12 +10813,9 @@ var DatabaseManager = function () {
     }, {
         key: 'addFacesResponse',
         value: function addFacesResponse(personID, imageUrl, response) {
-            console.log(response[0]);
             var responseFace = "&targetFace=" + response[0].faceRectangle.left + "," + response[0].faceRectangle.top + "," + response[0].faceRectangle.width + "," + response[0].faceRectangle.height;
             // Add face to person
-            var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/" + person_group_id + "/persons/" + personID + "/persistedFaces"; // + responseFace;
-            console.log(url);
-            console.log(imageUrl);
+            var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/" + person_group_id + "/persons/" + personID + "/persistedFaces";
             this.postRequest(url, { 'url': imageUrl });
             // $.ajax({
             //     url: url,

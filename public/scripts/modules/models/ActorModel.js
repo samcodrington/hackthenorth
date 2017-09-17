@@ -2,8 +2,8 @@ var mongoose = require('mongoose'),
 Schema = mongoose.Schema;
 
 var actorSchema = new Schema({
-    personID: String,
-    tmdbID: String,
+    personId: String,
+    tmdbId: String,
     name: String
 }, {collection: 'actors'});
 
