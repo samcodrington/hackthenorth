@@ -10746,7 +10746,7 @@ var DatabaseManager = function () {
             if (response && response.results.length > 0) {
                 var tmdbId = response.results[0].id;
                 (0, _jquery2.default)('#tmdbId').text(tmdbId);
-
+                name = response.results[0].name;
                 var query = {};
                 query.api_key = api_key;
 
