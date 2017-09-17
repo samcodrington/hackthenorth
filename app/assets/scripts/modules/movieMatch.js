@@ -122,7 +122,7 @@ class movieMatch{
 
     sortHitList(hitList){
         hitList.sort(function(a,b){
-            return a.count - b.count
+            return b.count - a.count
         })
     }
 
