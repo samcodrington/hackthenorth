@@ -1,6 +1,10 @@
 import $ from 'jquery';
 import config from '../../../../public/data/config.js';
+import movieMatch from './movieMatch';
 
+let tmdbIds = [];
+let allCandidates = [];
+let numFaces = 0;
 class ImageProcessor {
 
     constructor() {
@@ -21,6 +25,8 @@ class ImageProcessor {
         var requestBody = '{"url": ' + '"' + url + '"}';
 
         $('.column').empty();
+        $('.error').addClass('hidden');
+
 
         // Request parameters.
         var params = {
@@ -50,6 +56,7 @@ class ImageProcessor {
         })
     
         .done(function(data) {
+            numFaces = data.length;
             for (let face of data) {
                 this.getActorFromFaceID(face.faceId);
             }
@@ -89,13 +96,17 @@ class ImageProcessor {
         })
     
         .done(function(data) {
-            // Show formatted JSON on webpage.
-            
-            var confidence = 0;
             // Only one face is sent each call so 'data' should have length 1
             if (data[0].candidates.length > 0) {
                 // data[0].candidates can be of length 0 or more, each has a 'personId' and a 'confidence' property
                 this.generateCards(data[0].candidates);
+                for (let candidate of data[0].candidates) {
+                    allCandidates.push(candidate);
+                }
+                numFaces--;
+                if (numFaces <= 0) {
+                    this.matchMovies(allCandidates);
+                }
             }
             
         }.bind(this))
@@ -109,25 +120,10 @@ class ImageProcessor {
         }.bind(this));
     }
 
-    resetPercentage() {
-        $('#percentage').text(0);
-    }
-
-    updatePercentage(updatePercentage) {
-        updatePercentage *= 100;    // Convert to value out of 100 instead of out of 1
-        updatePercentage = Math.round(updatePercentage * 100) / 100; // Round to 2 decimal places
-        $('.result').removeClass('hidden');
-        var $percentage = $('#percentage')
-        if (updatePercentage > $percentage.text()) {
-            $percentage.text(updatePercentage);
-        }
-        $('.error').addClass('hidden');
-    }
-
     printError(errorString) {
-        $('.result').addClass('hidden');
         $('.error').removeClass('hidden');
         $('.error__text').text(errorString);
+        $('.column').empty();
     }
 
     generateCards(candidates) {
@@ -153,10 +149,31 @@ class ImageProcessor {
                     var resultJSON = JSON.parse(result);
                     $nameSpan.text(resultJSON.name);
                 }
+            }).
+            fail(function() {
+                //TODO: error handling
             });
 
             // Add to DOM
             $('.column--actors').append($html);
+        }
+    }
+
+    matchMovies(candidates) {
+        var numCandidates = candidates.length;
+        for (let candidate of candidates) {
+            var query = {'personId': candidate.personId};
+            // Retrieve records matching the personId's of the candidates
+            $.get('/api/actor', query, this.onTmdbIdRetrieval.bind(this, numCandidates));
+        }
+    }
+    
+    // response holds a name, a personId, and a tmdbId
+    onTmdbIdRetrieval(numCandidates, response) {
+        response = JSON.parse(response);
+        tmdbIds.push(response.tmdbId);
+        if (tmdbIds.length === numCandidates) {
+            new movieMatch(tmdbIds);
         }
     }
 

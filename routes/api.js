@@ -18,10 +18,15 @@ var ActorModel = require('../public/scripts/modules/models/ActorModel');
 */
 router.get('/actor', function(req, res, next) {
     var personId = req.query['personId'],
-    tmbId = req.query['tmbId'] ? req.query['tmbId'] : true,
-    name = req.query['name'] ? req.query['name'] : true;
+    tmdbId = req.query['tmdbId'],
+    query = {};
+    if (personId) {
+        query.personId = personId;
+    } else { // tmdbId
+        query.tmdbId = tmdbId;
+    }
 
-    ActorModel.findOne({ 'personId': personId }, function(err, result) {
+    ActorModel.findOne(query, function(err, result) {
         if (result) {
             return res.end(JSON.stringify(result));
         } else {
@@ -30,6 +35,8 @@ router.get('/actor', function(req, res, next) {
     });
     
 });
+
+
 
 router.post('/actor', function(req, res, next) {
     var actorData = {
