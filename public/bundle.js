@@ -10808,16 +10808,11 @@ var DatabaseManager = function () {
     }, {
         key: 'addFacesResponse',
         value: function addFacesResponse(personID, imageUrl, response) {
-            console.log('--');
-            console.log(personID);
-            console.log(imageUrl);
-            console.log(response);
-            console.log('--');
-            var faceID = response.faceID;
-            var responseFace = "&targetFace=" + response.faceRectangle.left + "," + response.faceRectangle.top + "," + response.faceRectangle.right + "," + response.faceRectangle.bottom;
+            var faceID = response[0].faceID;
+            var responseFace = "&targetFace=" + response[0].faceRectangle.left + "," + response[0].faceRectangle.top + "," + response[0].faceRectangle.right + "," + response[0].faceRectangle.bottom;
 
             // Add face to person
-            var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/" + person_group_id + "/persons/" + personId + "/persistedFaces" + responseFace;
+            var url = "https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/" + person_group_id + "/persons/" + personID + "/persistedFaces" + responseFace;
 
             this.postRequest(url, { 'url': imageUrl });
             // $.ajax({
