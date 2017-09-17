@@ -64,6 +64,7 @@ class movieMatch{
         //TODO: Sort combined List elements as a stretch goal
     }
     checkForMatchesInList(combinedList, type){
+        var hitList = [];
         for (var i = 0; i < numActors-1; i++){
             var listToCheck = combinedList[i][type];
             for (var j = 0; j < listToCheck.length; j ++){
@@ -71,11 +72,11 @@ class movieMatch{
                 
                 for (var k = i + 1; k < numActors; k ++){
                     if (   checkIDAgainstList(idToCheck, combinedList[k][type])  )
-                        addIDToHitList(idToCheck,type);
+                        hitList = addIDToHitList(idToCheck,type, hitList);
                 }
             } 
         }
-        sortHitList();
+        hitList = sortHitList(hitList);
     }
     checkIDAgainstList(id,list){
         for (let elem of list){
@@ -85,8 +86,20 @@ class movieMatch{
         return false;
     }
 
-    addIDToHitLIst(IdToCheck, type){
-
+    addIDToHitList(idToCheck, type, hitList){
+        for (let elem of hitList) {
+            if (elem.id === idToCheck && elem.type === type) {
+                // Element already exists in hitlist
+                elem.count++; // increment its hit counter
+                return hitList;
+            }
+        }
+        // Add element to hitlist
+        var hitObject = {};
+        hitObject.id = idToCheck;
+        hitObject.type = type;
+        hitObject.count = 2;
+        return hitList;
     }
 
     sortHitList(){
@@ -109,13 +122,13 @@ class movieMatch{
         }
     ]
     */
-    displayMovieMatches(allTitles) {
+    displayMovieMatches(hitList) {
         // Take at most top 3 hits
-        if (allTitles.length > 3) {
-            allTitles = allTitles.slice(0, 3);
+        if (hitList.length > 3) {
+            hitList = hitList.slice(0, 3);
         }
 
-        this.generateCards(allTitles);
+        this.generateCards(hitList);
     }
 
     generateCards(topTitles) {
