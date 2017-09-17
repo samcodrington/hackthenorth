@@ -1,3 +1,4 @@
+import $ from 'jquery';
 
 let api_key = '190078ca8ad2919e5e468521e5d5114a';
 let uri_root = 'https://api.themoviedb.org/3/';
@@ -13,7 +14,6 @@ class movieMatch{
     findMovies(actorTMDBids){
         var movieIDs = checkMatches(actorIMDBids);
         var movieInfo = retrieveMovieMatches(movieIDs);
-        displayMovieMatches(movieInfo);
     }
     checkMatches(actorTMDBids){
         for (i = 0; i < numActors; i++){
@@ -53,5 +53,38 @@ class movieMatch{
         return tmdbIds.filter(function(item) {
             return seen.hasOwnProperty(item) ? false : seen([item] = true);
         });
+    }
+    /*
+    allTitles is of the form:
+    [
+        {
+            'type': 'movie'/'tv',
+            'id': 'asdfasdf',
+            'count': 3
+        }
+    ]
+    */
+    displayMovieMatches(allTitles) {
+        // Take at most top 3 hits
+        if (allTitles.length > 3) {
+            allTitles = allTitles.slice(0, 3);
+        }
+
+        this.generateCards(allTitles);
+    }
+
+    generateCards(topTitles) {
+        for (let title of topTitles) {
+            let $html = $('<div>', {'class': 'card'}).append(
+                $('<h2>').text('Title: ').append(
+                    $('<span>').text(title.name)
+                ),
+                $('<h2>').text('Features ').append(
+                    $('<span>', {'class': 'title'}).text(title.count),
+                    $('<span>').text(' of the actors.')
+                )
+            );
+            $('.column--titles').append($html);
+        }
     }
 }
