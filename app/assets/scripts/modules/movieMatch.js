@@ -1,6 +1,7 @@
 
 let api_key = '190078ca8ad2919e5e468521e5d5114a';
 let uri_root = 'https://api.themoviedb.org/3/';
+let combinedList = [];
 
 class movieMatch{
     constructor(actorTMDBids){
@@ -13,14 +14,18 @@ class movieMatch{
         displayMovieMatches(movieInfo);
     }
     checkMatches(actorTMDBids){
-        var combinedIDs = [];
         for (i = 0; i < actorTMDBids.length; i++){
             var actorId = actorTMDBids[i];
-            var combinedList = retrieveAll(actorId);
-            combinedIDs = splitTVMovie(combinedList);
+            retrieveAll(actorId);
         }
+   }
+
+    retrieveAll(actorId) {
+        var query = {};
+        query.api_key = api_key;
+        var url = uri_root + "/person/" + actorId + "/combined_credits";
+        $.get(url,query,retrieveAllResponse);
         
-        return combinedIDs;
     }
     splitTVMovie(combinedList){
         var movieList = [];
@@ -33,15 +38,12 @@ class movieMatch{
         }
         return [movieList,tvList];
     }
-    retrieveAll(actorId) {
-        var query = {};
-        query.api_key = api_key;
-        var url = uri_root + "/person/" + actorId + "/combined_credits";
-        
+    
+    retrieveAllResponse(response){
+        splitList = splitTVMovie(response.cast);
+        addNewCombinedList(splitList);
     }
-    retrieveMovies(actorId){
-        
-
+    addNewCombinedList(combinedList){
 
     }
 }
