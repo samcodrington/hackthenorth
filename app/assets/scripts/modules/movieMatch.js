@@ -6,11 +6,13 @@ let numActors = 0;
 let numListsRetrieved = 0;
 
 class movieMatch{
+    
     constructor(actorTMDBids){
         actorTMDBids = this.removeDoubles(actorTMDBids);        
         numActors = actorTMDBids.length;
         this.findMovies(actorTMDBids);
     }
+    
     findMovies(actorTMDBids){
         for (i = 0; i < numActors; i++){
             var actorId = actorTMDBids[i];
@@ -27,6 +29,7 @@ class movieMatch{
         $.get(url,query,retrieveAllResponse);
         
     }
+    
     splitTVMovie(combinedList){
         var movieList = [];
         var tvList = [];
@@ -43,12 +46,18 @@ class movieMatch{
         splitList = splitTVMovie(response.cast);
         addNewCombinedList(splitList);
     }
+    
     addNewCombinedList(splitList){
         combinedList.push(splitList);
         numListsRetrieved++;
         if (numListsRetrieved == numActors)
-            
+            checkMatches();    
     }
+    
+    checkMatches(){
+
+    }
+
     removeDoubles(tmdbIds) {
         var seen = {};
         return tmdbIds.filter(function(item) {
