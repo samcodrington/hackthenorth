@@ -1,10 +1,13 @@
+
 let api_key = '190078ca8ad2919e5e468521e5d5114a';
 let uri_root = 'https://api.themoviedb.org/3/';
 let combinedList = [];
+let numActors = 0;
 
 class movieMatch{
     constructor(actorTMDBids){
-        actorTMDBids = this.removeDoubles(actorTMDBids);
+        actorTMDBids = this.removeDoubles(actorTMDBids);        
+        numActors = actorTMDBids.length;
         this.findMovies(actorTMDBids);
     }
     findMovies(actorTMDBids){
@@ -13,7 +16,7 @@ class movieMatch{
         displayMovieMatches(movieInfo);
     }
     checkMatches(actorTMDBids){
-        for (i = 0; i < actorTMDBids.length; i++){
+        for (i = 0; i < numActors; i++){
             var actorId = actorTMDBids[i];
             retrieveAll(actorId);
         }
@@ -42,8 +45,8 @@ class movieMatch{
         splitList = splitTVMovie(response.cast);
         addNewCombinedList(splitList);
     }
-    addNewCombinedList(combinedList){
-
+    addNewCombinedList(splitList){
+        combinedList.push(splitList);
     }
     removeDoubles(tmdbIds) {
         var seen = {};
