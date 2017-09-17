@@ -95,8 +95,9 @@ class movieMatch{
     }
     checkIDAgainstList(id,list){
         for (let elem of list){
-            if (elem.id == id)
+            if (elem.id == id) {
                 return true;
+            }
         }
         return false;
     }

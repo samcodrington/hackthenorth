@@ -10544,11 +10544,10 @@ var ImageProcessor = function () {
                             }
                         }
                     }
-
-                    numFaces--;
-                    if (numFaces <= 0) {
-                        this.matchMovies(allCandidates);
-                    }
+                }
+                numFaces--;
+                if (numFaces <= 0) {
+                    this.matchMovies(allCandidates);
                 }
             }.bind(this)).fail(function (jqXHR, textStatus, errorThrown) {
                 // Display error message.
@@ -10833,7 +10832,9 @@ var movieMatch = function () {
                 for (var _iterator2 = list[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                     var elem = _step2.value;
 
-                    if (elem.id == id) return true;
+                    if (elem.id == id) {
+                        return true;
+                    }
                 }
             } catch (err) {
                 _didIteratorError2 = true;

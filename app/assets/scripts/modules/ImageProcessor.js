@@ -105,10 +105,10 @@ class ImageProcessor {
                 for (let candidate of data[0].candidates) {
                     allCandidates.push(candidate);
                 }
-                numFaces--;
-                if (numFaces <= 0) {
-                    this.matchMovies(allCandidates);
-                }
+            }
+            numFaces--;
+            if (numFaces <= 0) {
+                this.matchMovies(allCandidates);
             }
             
         }.bind(this))
