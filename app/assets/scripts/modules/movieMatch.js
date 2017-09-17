@@ -64,15 +64,15 @@ class movieMatch{
         //TODO: Sort combined List elements as a stretch goal
     }
     checkForMatchesInList(combinedList, type){
-        for (var i = 0; i < numActors; i++){
-            for (var j = 0; j < combinedList[i][type].length; j ++){
-                var idToCheck = combinedList[i][type].id;
+        for (var i = 0; i < numActors-1; i++){
+            var listToCheck = combinedList[i][type];
+            for (var j = 0; j < listToCheck.length; j ++){
+                var idToCheck = listToCheck[j].id;
+                
                 for (var k = i + 1; k < numActors; k ++){
                     if (   checkIDAgainstList(idToCheck, combinedList[k][type])  )
-                        addIDToHitList(idToCheck,type)
+                        addIDToHitList(idToCheck,type);
                 }
-                   
-
             } 
         }
     }
