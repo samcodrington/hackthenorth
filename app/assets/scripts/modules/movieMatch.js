@@ -4,6 +4,7 @@ let uri_root = 'https://api.themoviedb.org/3/';
 
 class movieMatch{
     constructor(actorTMDBids){
+        
         this.findMovies(actorTMDBids);
     }
     findMovies(actorTMDBids){
@@ -25,7 +26,8 @@ class movieMatch{
     retrieveMovies(actorId){
         var query = {};
         query.api_key = api_key;
-        var url = uri_root + "/person/" + actorId + "/movie_credits"
+        var url = uri_root + "/person/" + actorId + "/combined_credits";
+
 
     }
 }
