@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>Not Jon Snow</title>
-        <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Raleway|Bree+Serif" rel="stylesheet">
         <link rel="stylesheet" href="styles/style.css">
     </head>
     <body>
@@ -12,8 +12,8 @@
             <input id='urlBox' class='textbox' type="text" placeholder="Enter an image URL">
             <button id='urlSubmit' class='btn'>Submit</button>
         </div>
-        <div class='wrapper'>
-            <h1 class='title'>Which Actor/Movie/Show is it?</h1>
+        <div class='wrapper top'>
+            <h1 class='title margin--top'>Which Actor/Movie/Show is it?</h1>
 
             <!-- <div class='drop-zone__container margin--top'>
                 <form id='#drop-zone' class='drop-zone' method="POST" action="#" enctype="multipart/form-data">
@@ -28,51 +28,52 @@
                     
                 </form>
             </div> -->
+            <div class="img-container margin--top">
+                <img>
+            </div>
+
         </div>
-            
-        <img class="img-container margin--top">
 
-        <div class='wrapper'></div>
-            <div class="text-align-center margin--top result hidden">
-                <h3>Certainty that you selected an image of Jon Snow:</h3>
-                <h2 class="title margin--top"><span id="percentage">81.1</span>%</h2>
-                <!-- <h2 class="margin--top">There is aYou know nothing.</h2> -->
-            </div>
-            
-            <div class="text-align-center margin--top error hidden">
-                <h2>Error</h2>
-                <h2 class="error__text"></h2>
-                <h2>Please try again.</h2>
-            </div>
+        <div class='bottom'>
+            <div class="wrapper">
+                <div class="text-align-center margin--top result hidden">
+                    <h3>Certainty that you selected an image of Jon Snow:</h3>
+                    <h2 class="title margin--top"><span id="percentage">81.1</span>%</h2>
+                    <!-- <h2 class="margin--top">There is aYou know nothing.</h2> -->
+                </div>
+                
+                <div class="text-align-center margin--top error hidden">
+                    <h2>Error</h2>
+                    <h2 class="error__text"></h2>
+                    <h2>Please try again.</h2>
+                </div>
 
-            <div class="column">
-                <!-- Actors go here -->
-                <div class='card'>
-                    <h2>Name: Kit Harrington</h2>
-                    <h2>Facial Match: 81.1%</h2>
+                <div class="column">
+                    <!-- Actors go here -->
+                    <div class='card'>
+                        <h2>Name: Kit Harrington</h2>
+                        <h2>Facial Match: 81.1%</h2>
+                    </div>
+                    <div class='card'>
+                        <h2>Name: Peter Dinklage</h2>
+                        <h2>Facial Match: 98.8%</h2>
+                    </div>
                 </div>
-                <div class='card'>
-                    <h2>Name: Peter Dinklage</h2>
-                    <h2>Facial Match: 98.8%</h2>
+                <div class="column column--right">
+                    <!-- Movies/Shows go here -->
+                    <div class='card'>
+                        <h2>Title: Game of Thrones</h2>
+                        <h2>Likelihood: 95.2%</h2>
+                    </div>
                 </div>
-            </div>
-            <div class="column column--right">
-                <!-- Movies/Shows go here -->
-                <div class='card'>
-                    <h2>Title: Game of Thrones</h2>
-                    <h2>Likelihood: 95.2%</h2>
-                </div>
-            </div>
             </div> <!-- /.wrapper -->
-
             <div class="tmdb">
                 <input id="nameInput" class='textbox' type="text">
                 <button id="nameButton" class='btn' type="submit">Search</button>
                 <div id="tmdbId"></div>
                 <div id="tmdbImgContainer"></div>
             </div>
-        
-
+        </div>
 
         <!-- From the example -->
 <!-- 

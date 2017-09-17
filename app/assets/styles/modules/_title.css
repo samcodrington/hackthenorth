@@ -1,16 +1,19 @@
 .title {
     text-align: center;
+    display: inline-block;
+    width: 100%;
     font-size: 2rem;
+    font-family: 'Bree Serif', serif;
 
     @mixin atSmall {
         font-size: 2.25rem;
     }
 
     @mixin atMedium {
-        font-size: 3rem;
+        font-size: 5rem;
     }
 
     @mixin atLarge {
-        font-size: 4rem;
+        font-size: 3rem;
     }
 }

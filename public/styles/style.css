@@ -34,7 +34,10 @@ a {
 }
 .title {
     text-align: center;
+    display: inline-block;
+    width: 100%;
     font-size: 2rem;
+    font-family: 'Bree Serif', serif;
 }
 @media (min-width: 530px) {
 .title {
@@ -43,12 +46,12 @@ a {
     }
 @media (min-width: 800px) {
 .title {
-        font-size: 3rem
+        font-size: 5rem
 }
     }
 @media (min-width: 1010px) {
 .title {
-        font-size: 4rem
+        font-size: 3rem
 }
     }
 .drop-zone {
@@ -124,70 +127,113 @@ a {
     text-align: center;
 }
 .wrapper {
-    padding-left: 18px;
-    padding-right: 18px;
     max-width: 1236px;
     margin-left: auto;
     margin-right: auto;
 }
+@media (min-width: 1010px) {
+.wrapper {
+        padding-left: 18px;
+        padding-right: 18px
+}
+    }
 .margin--top {
         margin-top: 2rem;
     }
 .btn {
     display: inline-block;
-    height: 4rem;
+    height: 7rem;
     width: 100%;
     padding: 0 1rem;
-    background: #AFC4E0;
+    background: #246EC1;
     font-family: 'Raleway', sans-serif;
-    font-size: 2rem;
+    font-size: 4rem;
     font-weight: bold;
-    color: #343F3E;
+    color: #DCEDFF;
     border: none;
     cursor: pointer;
 }
 .btn:hover {
-        background-color: #B3CEF2;
+        background-color: #4A8EDB;
+    }
+@media (min-width: 1010px) {
+.btn {
+        width: 25%;
+        float: right;
+        height: 4rem;
+        font-size: 2rem
+}
     }
 .textbox {
     display: inline-block;
-    height: 4rem;
+    height: 7rem;
     font-family: 'Raleway', sans-serif;
-    font-size: 2rem;
+    font-size: 4rem;
     width: 100%;
-    /* position: absolute; */
     top: 0;
     left: 0;
 }
+@media (min-width: 1010px) {
+.textbox {
+        width: 75%;
+        height: 4rem;
+        font-size: 2rem
+}
+    }
 .error {
-    /* TODO: pick a better red */
     color: #DCEDFF; 
     background-color: #A8533F;
     padding: 1rem;
+    font-size: 2.25rem;
 }
 .img-container {
     width: 100%;
     height: auto;
+    text-align: center;
+    position: relative;
 }
+@media (min-width: 1010px) {
+.img-container img {
+            width: 50%
+    }
+    }
 .column {
-    /* background-color: rgba($mediumBlue, 0.5); */
-    width: 50%;
+    width: 100%;
     margin: 0;
+    margin-bottom: 3rem;
     display: inline-block;
     padding-right: 0.25rem;
     float: left;
-    margin-bottom: 3rem;
 }
 .column--right {
         float: right;
         padding: 0;
         padding-left: 0.25rem;
     }
+@media (min-width: 1010px) {
+.column {
+        width: 50%
+}
+    }
 .card {
-    background-color: #246EC1;
+    background-color: #DCEDFF;
     padding: 0.5rem;
     margin-bottom: 0.5rem;
+    font-size: 3rem;
 }
 .card h2 {
-        color: #DCEDFF
+        color: #343F3E;
     }
+@media (min-width: 1010px) {
+.card {
+        font-size: 1.5rem
+}
+    }
+.bottom {
+    background: #B3CEF2;
+    min-height: 100vh;
+    padding-top: 1rem;
+}
+.top {
+    margin-bottom: 1rem;
+}
