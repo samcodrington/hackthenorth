@@ -86,7 +86,7 @@ class movieMatch{
             var listToCheck = combinedList[i][type];
             for (var j = 0; j < listToCheck.length; j ++){
                 var idToCheck = listToCheck[j].id;
-                if (checkHitList(idToCheck,hitList,type)){
+                if (this.checkHitList(idToCheck,hitList,type)){
                     for (var k = i + 1; k < numActors; k ++){
                         var secondList = combinedList[k][type];
                     

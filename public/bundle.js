@@ -10823,10 +10823,12 @@ var movieMatch = function () {
                 var listToCheck = combinedList[i][type];
                 for (var j = 0; j < listToCheck.length; j++) {
                     var idToCheck = listToCheck[j].id;
-                    for (var k = i + 1; k < numActors; k++) {
-                        var secondList = combinedList[k][type];
+                    if (this.checkHitList(idToCheck, hitList, type)) {
+                        for (var k = i + 1; k < numActors; k++) {
+                            var secondList = combinedList[k][type];
 
-                        if (this.checkIDAgainstList(idToCheck, secondList)) hitList = this.addElemToHitList(listToCheck[j], type, hitList);
+                            if (this.checkIDAgainstList(idToCheck, secondList)) hitList = this.addElemToHitList(listToCheck[j], type, hitList);
+                        }
                     }
                 }
             }
@@ -10836,19 +10838,17 @@ var movieMatch = function () {
             this.displayMovieMatches(hitList);
         }
     }, {
-        key: 'checkIDAgainstList',
-        value: function checkIDAgainstList(id, list) {
+        key: 'checkHitList',
+        value: function checkHitList(id, hitList, type) {
             var _iteratorNormalCompletion2 = true;
             var _didIteratorError2 = false;
             var _iteratorError2 = undefined;
 
             try {
-                for (var _iterator2 = list[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                for (var _iterator2 = hitList[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                     var elem = _step2.value;
 
-                    if (elem.id == id) {
-                        return true;
-                    }
+                    if (elem.type === type && elem.id === id) return false; //returns false if element is already in hitlist
                 }
             } catch (err) {
                 _didIteratorError2 = true;
@@ -10865,26 +10865,23 @@ var movieMatch = function () {
                 }
             }
 
-            return false;
+            return true; //returns true otherwise
         }
     }, {
-        key: 'addElemToHitList',
-        value: function addElemToHitList(elemToCheck, type, hitList) {
+        key: 'checkIDAgainstList',
+        value: function checkIDAgainstList(id, list) {
             var _iteratorNormalCompletion3 = true;
             var _didIteratorError3 = false;
             var _iteratorError3 = undefined;
 
             try {
-                for (var _iterator3 = hitList[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                for (var _iterator3 = list[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
                     var elem = _step3.value;
 
-                    if (elem.id === elemToCheck.id && elem.type === type) {
-                        // Element already exists in hitlist
-                        elem.count++; // increment its hit counter
-                        return hitList;
+                    if (elem.id == id) {
+                        return true;
                     }
                 }
-                // Add element to hitlist
             } catch (err) {
                 _didIteratorError3 = true;
                 _iteratorError3 = err;
@@ -10896,6 +10893,41 @@ var movieMatch = function () {
                 } finally {
                     if (_didIteratorError3) {
                         throw _iteratorError3;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }, {
+        key: 'addElemToHitList',
+        value: function addElemToHitList(elemToCheck, type, hitList) {
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
+
+            try {
+                for (var _iterator4 = hitList[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    var elem = _step4.value;
+
+                    if (elem.id === elemToCheck.id && elem.type === type) {
+                        // Element already exists in hitlist
+                        elem.count++; // increment its hit counter
+                        return hitList;
+                    }
+                }
+                // Add element to hitlist
+            } catch (err) {
+                _didIteratorError4 = true;
+                _iteratorError4 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                        _iterator4.return();
+                    }
+                } finally {
+                    if (_didIteratorError4) {
+                        throw _iteratorError4;
                     }
                 }
             }
@@ -10947,29 +10979,29 @@ var movieMatch = function () {
     }, {
         key: 'generateCards',
         value: function generateCards(topTitles) {
-            var _iteratorNormalCompletion4 = true;
-            var _didIteratorError4 = false;
-            var _iteratorError4 = undefined;
+            var _iteratorNormalCompletion5 = true;
+            var _didIteratorError5 = false;
+            var _iteratorError5 = undefined;
 
             try {
-                for (var _iterator4 = topTitles[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                    var title = _step4.value;
+                for (var _iterator5 = topTitles[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                    var title = _step5.value;
 
                     var $titleSpan = (0, _jquery2.default)('<a>', { 'class': 'nameSpan', 'href': BASE_URI + title.id }).text(title.name);
                     var $html = (0, _jquery2.default)('<div>', { 'class': 'card' }).append((0, _jquery2.default)('<h2>').text('Title: ').append($titleSpan), (0, _jquery2.default)('<h2>').text('Features ').append((0, _jquery2.default)('<span>', { 'class': 'title' }).text(title.count), (0, _jquery2.default)('<span>').text(' of the actors.')));
                     (0, _jquery2.default)('.column--titles').append($html);
                 }
             } catch (err) {
-                _didIteratorError4 = true;
-                _iteratorError4 = err;
+                _didIteratorError5 = true;
+                _iteratorError5 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                        _iterator4.return();
+                    if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                        _iterator5.return();
                     }
                 } finally {
-                    if (_didIteratorError4) {
-                        throw _iteratorError4;
+                    if (_didIteratorError5) {
+                        throw _iteratorError5;
                     }
                 }
             }
