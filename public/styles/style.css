@@ -180,3 +180,7 @@ span.title {
     margin-bottom: 1rem;
     background-color: #DCEDFF;
 }
+.nameSpan {
+    cursor: pointer;
+    color: #246EC1;
+}
