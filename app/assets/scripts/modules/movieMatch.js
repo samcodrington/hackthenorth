@@ -12,16 +12,13 @@ class movieMatch{
         this.findMovies(actorTMDBids);
     }
     findMovies(actorTMDBids){
-        var movieIDs = checkMatches(actorIMDBids);
-        var movieInfo = retrieveMovieMatches(movieIDs);
-        displayMovieMatches(movieInfo);
-    }
-    checkMatches(actorTMDBids){
         for (i = 0; i < numActors; i++){
             var actorId = actorTMDBids[i];
             retrieveAll(actorId);
         }
-   }
+        var movieInfo = retrieveMovieMatches(movieIDs);
+        displayMovieMatches(movieInfo);
+    }
 
     retrieveAll(actorId) {
         var query = {};
@@ -49,6 +46,8 @@ class movieMatch{
     addNewCombinedList(splitList){
         combinedList.push(splitList);
         numListsRetrieved++;
+        if (numListsRetrieved == numActors)
+            
     }
     removeDoubles(tmdbIds) {
         var seen = {};
