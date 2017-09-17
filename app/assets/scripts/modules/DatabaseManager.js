@@ -61,11 +61,12 @@ class DatabaseManager {
         $.post('/api/actor', data, () => {
         })
     }
+
     onNameQueryResponse(name, response) {
         if (response && response.results.length > 0) {
             var tmdbId = response.results[0].id;
             $('#tmdbId').text(tmdbId);
-            
+            name = response.results[0].name;
             var query = {};
             query.api_key = api_key;
 
