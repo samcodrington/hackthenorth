@@ -6,6 +6,7 @@
         <link href="https://fonts.googleapis.com/css?family=Raleway|Bree+Serif" rel="stylesheet">
         <link rel="stylesheet" href="styles/style.css">
     </head>
+
     <body>
             
         <div class="text-align-center">
@@ -21,75 +22,29 @@
 
         </div>
 
-        <div class='bottom'>
-            <div class="wrapper">
-                
-                <div class="text-align-center margin--top error hidden">
-                    <h2>Error</h2>
-                    <h2 class="error__text"></h2>
-                    <h2>Please try again.</h2>
-                </div>
+        <div class="wrapper">
+            
+            <div class="text-align-center margin--top error hidden">
+                <h2>Error</h2>
+                <h2 class="error__text"></h2>
+                <h2>Please try again.</h2>
+            </div>
 
-                <div class="column column--actors">
-                    <!-- Actors go here -->
-                </div>
-                <div class="column column--right column--titles">
-                    <!-- Movies/Shows go here -->
-                    <!-- <div class='card'>
-                        <h2>Title: Game of Thrones</h2>
-                        <h2>Likelihood: <span class='title'>95.2</span>%</h2>
-                    </div> -->
-                </div>
-            </div> <!-- /.wrapper -->
-            <div class="tmdb">
+            <div class="column column--actors">
+                <!-- Actors go here -->
+            </div>
+            <div class="column column--right column--titles">
+                <!-- Movies/Shows go here -->
+            </div>
+        </div> <!-- /.wrapper -->
+
+            <!-- For updating the Microsoft Azure database -->
+            <!-- <div class="tmdb">
                 <input id="nameInput" class='textbox' type="text">
                 <button id="nameButton" class='btn' type="submit">Search</button>
                 <div id="tmdbId"></div>
                 <div id="tmdbImgContainer"></div>
-            </div>
-        </div>
-
-        <!-- From the example -->
-<!-- 
-        <h1>Detect Faces:</h1>
-        Enter the URL to an image that includes a face or faces, then click the <strong>Analyze face</strong> button.
-        <br><br>
-        Image to analyze: <input type="text" name="inputImage" id="inputImage" value="https://upload.wikimedia.org/wikipedia/commons/c/c3/RH_Louise_Lillian_Gish.jpg" />
-        <button id = "urlbutton">Analyze face</button>
-        <br><br>
-        <div id="wrapper" style="width:1020px; display:table;">
-            <div id="jsonOutput" style="width:600px; display:table-cell;">
-                Response:
-                <br><br>
-                <textarea id="responseTextArea" class="UIInput" style="width:580px; height:400px;"></textarea>
-            </div>
-            <div id="imageDiv" style="width:420px; display:table-cell;">
-                Source image:
-                <br><br>
-                <img id="sourceImage" width="400" />
-            </div>
-        </div> -->
-
-        <!-- /From the example
-        <h1>Add Face to Facelist</h1>
-        Enter the URL to an image that includes a face or faces, then click the <strong>Analyze face</strong> button.
-        <br><br>
-        Image to analyze: <input type="text" name="inputImage" id="inputImage" value="https://upload.wikimedia.org/wikipedia/commons/c/c3/RH_Louise_Lillian_Gish.jpg" />
-        <button onclick="postFace()">Add face to database</button>
-        <br><br>
-        <div id="wrapper" style="width:1020px; display:table;">
-            <div id="jsonOutput" style="width:600px; display:table-cell;">
-                Response:
-                <br><br>
-                <textarea id="responseTextArea" class="UIInput" style="width:580px; height:400px;"></textarea>
-            </div>
-            <div id="imageDiv" style="width:420px; display:table-cell;">
-                Source image:
-                <br><br>
-                <img id="sourceImage" width="400" />
-            </div>
-        </div> -->
-
+            </div> -->
 
         <script src='bundle.js'></script>
     </body>

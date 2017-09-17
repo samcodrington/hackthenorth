@@ -6,7 +6,7 @@ let combinedList = [];
 let numActors = 0;
 let numListsRetrieved = 0;
 
-const MAX_MATCHES = 10; // The most number of common titles to be displayed
+const MAX_MATCHES = 5; // The most number of common titles to be displayed
 
 class movieMatch{
     
@@ -87,7 +87,7 @@ class movieMatch{
             } 
         }
         if (numActors>2) {
-            this.sortHitList();
+            this.sortHitList(hitList);
         }
         this.displayMovieMatches(hitList);
 
